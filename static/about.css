@@ -1,0 +1,38 @@
+.aboutMain {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.aboutContainer {
+    max-width: 900px;
+    background-color: #4f2e1dab;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.aboutContainer h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.aboutContainer p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+}
+
+*{
+    margin: 0;
+}
+.footer-cta {
+    display: flex;
+    justify-content: center; 
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap; 
+}
+
+.play-btn{
+    font-size: 30px;
+}

@@ -1,0 +1,203 @@
+/* main */
+* {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    color: rgb(255, 255, 255);
+}
+
+body{
+    background-color: #f3aa1d;
+}
+
+/* basic button */
+a button{
+    text-align: center;
+    border: none;
+    background-color: #4f2e1d;
+    padding: 5px 24px;
+    font-size: clamp(1rem, 3.5vw, 2rem);
+    cursor: pointer;
+    border-radius: 11px;
+    transition-duration: 0.5s;
+}
+
+a button:hover{
+    transform: scale(1.1);
+    background-color: #362014;
+}
+
+button{
+    text-align: center;
+    border: none;
+    background-color: #4f2e1d;
+    padding: 5px 24px;
+    font-size: clamp(1rem, 3.5vw, 2rem);
+    cursor: pointer;
+    border-radius: 11px;
+    transition-duration: 0.5s;
+
+}
+button:hover{
+    transform: scale(1.4);
+    background-color: #362014;
+    color: #f3aa1d;
+}
+
+
+/* header */
+
+.header {
+    background-color: #4f2e1d;
+    padding: 10px 40px;
+}
+.headerElements {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;           
+    max-width: 1200px;             
+    margin: 0 auto;               
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+.logo h1 {
+    cursor: pointer;
+    margin: 0;
+    font-size: 2.5rem;
+    transition-duration: 1.5s;
+}
+
+
+.logo h1:hover{
+    color: #f3aa1d;
+    margin: 0;
+    transform: scale(1.1);
+}
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo img{
+    max-width: 70px;
+    transition-duration: 1s;
+}
+.logo img:hover{
+    transform: scale(1.1);
+}
+
+
+.logo ul {
+    margin-top: 20px;
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 20px; 
+    
+}
+
+.logo ul li a {
+    font-size: 20px;
+    
+    text-decoration: none;
+    
+
+}
+.logo ul li a:hover {
+    color: #f3aa1d;
+    
+
+}
+.logo ul li{
+    transition-duration: 1s;
+
+}
+.logo ul li:hover{
+    transform: scale(1.5);
+
+}
+
+/* footer */
+
+footer {
+    background-color: #2c1a11; 
+    color: #ffffff;
+    padding: 40px 20px 20px 20px;
+    margin-top: 50px;
+    text-align: center;
+    border-top: 4px solid #F2A900;
+}
+
+.footer-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cord h3 {
+    color: #F2A900;
+    margin-bottom: 15px;
+}
+
+.cord p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #ffffff;
+    margin-bottom: 25px;
+}
+
+.discord-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.discord-cta span {
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.discord-btn {
+    background-color: #5865F2; 
+    color: rgb(255, 255, 255);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.discord-btn:hover {
+    background-color: #4752c4;
+    transform: scale(1.05); 
+}
+
+.footer-bottom {
+    margin-top: 40px;
+    font-size: 12px;
+    opacity: 0.7;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+}
+
+/* mobile */
+@media (max-width: 600px) {
+    .headerElements, .logo {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    .logo ul {
+        justify-content: center;
+    }
+}
