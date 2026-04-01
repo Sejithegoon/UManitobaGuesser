@@ -223,13 +223,16 @@ function nextRound() {
 
         setupRound();
     } else {
-        document.getElementById("guessButton").remove()
+        document.getElementById("guessButton").style.display = "none";
         showFeedback(`🏁 Game Over!\nFinal Score: ${gameState.totalScore} 🦬`);
     }
 }
 
 document.getElementById('restartButton').addEventListener('click', function(){
 
+    const guessBtn = document.getElementById("guessButton");
+    guessBtn.style.display = "inline-block";
+    guessBtn.innerText = "guess";
     gameState.currntRound = 1;
     gameState.totalScore = 0;
     gameState.userGuess = null;
