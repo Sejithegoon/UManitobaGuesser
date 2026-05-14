@@ -1,119 +1,112 @@
+/* 1. Global Reset - Keep this to prevent scroll issues */
 * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
     font-family: "Bebas Neue", sans-serif;
     font-weight: 500;
     font-style: normal;
-    color: white;
-    box-sizing: border-box;
-
+    color: rgb(0, 0, 0);
 }
 
-body{
-    background-color: #f3aa1d;
-     
+body {
+    overflow-x: hidden; 
 }
 
-.homePageElements{
+
+.main {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    position: relative;
-    text-align: center;
-    gap: 20px;
-}
-.login {
-    display: flex;
-    gap: 30px;
-}
-
-.homePageElements h1 {
-    cursor: pointer;
-    background-color: #4f2e1d;
-    padding: 10px 28px;
-    border-radius: 11px;
-
-    font-size: clamp(2rem, 10vw, 4rem); 
-    transition-duration: 0.3s;
-
-}
-
-.homePageElements h1:hover {
-    transform: scale(0.9);
-    color:#f3aa1d;
-    
-
-    font-size: clamp(2rem, 12vw, 4rem); 
-}
-
-
-
-.play a button{
-    text-align: center;
-    border: none;
-    background-color: #4f2e1d;
-    padding: 5px 24px;
-    font-size: clamp(1rem, 7.5vw, 2rem);
-    cursor: pointer;
-    border-radius: 11px;
-    transition-duration: 0.5s;
-}
-
-.login a button{
-    text-align: center;
-    border: none;
-    background-color: #4f2e1d;
-    padding: 5px 24px;
-    font-size: clamp(0.8rem, 4.4vw, 1.5rem);
-    cursor: pointer;
-    border-radius: 10px;
-    transition-duration: 0.5s;
-}
-.play a button:hover{
-    transform: scale(1.4);
-    background-color: #362014;
-    color: #f3aa1d;
-}
-
-.login a button:hover{
-    transform: scale(1.2);
-    background-color: #362014;
-    color: #f3aa1d;
-
-}
-.banner{
-    padding: 7px;
-    background-color: #4f2e1d;
-    overflow: hidden;
+    min-height: calc(100vh - 60px); 
     width: 100%;
+    padding: 20px;
 }
 
-.banner .bannerContent{
-    margin: 12px;
-    font-size: 20px;
-    
-}
-.bannerText p{
-    white-space: nowrap;
-    display: inline-block;
-    padding-left: 0;
-    animation: slide-right-to-left 30s linear infinite;
+/* 3. The Content Card */
+.mainConetent {
+    display: grid;
+    gap: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 100%;
+    justify-items: center; 
 }
 
-.bisonImg img{
-    width: 350px;
-    height: 350px;
+
+.bisonImg {
+    width: 100px;
+    height: 100px;
 }
-@keyframes slide-right-to-left {
-  0% {
-    transform: translateX(100vw); 
-  }
-  100% {
-    transform: translateX(-100%); 
-  }
+
+.bisonImg img {
+    display: block;
+    width: 110%;
+    height: 110%;
+    object-fit: cover;
 }
-body, html{
+
+/* 5. Typography & Elements */
+h1, h3 {
+    text-align: center;
     margin: 0;
 }
 
+h1 {
+    font-size: 3rem; 
+    color: #502c1e;
+    line-height: 1;
+}
 
+.gameOptions h3 {
+    color: rgba(0, 0, 0, 0.347);
+}
+
+.options {
+    margin-top: 10px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* 6. Buttons */
+
+.options button{
+    font-size:20px;
+    padding: 4px 20px;
+}
+button {
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s ease;
+    border-radius: 10px;
+    background: #003471;
+    color: #ffffff;
+}
+
+.playButton button {
+    font-size: 35px;
+    padding: 10px 30px;
+}
+
+
+.accountButtons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.accountButtons button {
+    font-size: 15px;
+    padding: 5px 20px;
+    background: #fbb315;
+    color: rgb(0, 0, 0);
+}
+
+/* Hover Effect */
+button:hover {
+    transform: scale(1.1); /* 'scale' is cleaner than 'scale: calc(1.1)' */
+}

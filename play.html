@@ -1,116 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Iceland&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Oswald:wght@200..700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UManitoba Geusser</title>
-    <link rel="shortcut icon" href="./assets/logo-main.png" type="image/x-icon">
+    <title>Play | UManitoba Guesser</title>
+    <link rel="shortcut icon" href="./assets/logo-main.webp" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/edb895a006.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="./static/main.css">
     <link rel="stylesheet" href="./static/play.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/edb895a006.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
-    <header>
-        <div class="header">
-            <div class="headerElements">
-                <div class="logo">
-                    <div class="con">
-                        <img src="./assets/logo-main.png" alt="">
-                    </div>
-                    
-                    <ul>
-                        <li><a href="./index.html">Home</a></li>
-                        <li><a href="./about us.html">About US</a></li>
-                        <li><a href="#">Login</a></li>
-                    </ul>
-                </div>
-            </div>
- 
+
+    <div class="nav">
+        <div class="logo">
+            <a href="./index.html"><img src="./assets/logo-main.webp" alt="logo"></a>
         </div>
-    </header>
-
-    <div class="game">
-        <h1>ROUND 1</h1>
-        
-        <div class="gameLocation">
-            <div  id="gameLocation">
-                <img src="./locations/location1.png" alt="location">
-            </div>
+        <div class="links">
+            <ul>
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./about us.html">About Us</a></li>
+                <li><a class="accountButtons" href="#"><button>login</button></a></li>
+            </ul>
         </div>
-
-
-        <div class="map">
-            <div id="map">
-            </div>
-        </div>
-        <br>
-
-        <div class="stats">
-            <div id="stats">
-                <p id="scroe">score: 0 🦬</p>
-                
-            </div>
-
-            <div id="feedbackModal" class="modal hidden">
-                <div class="modalContent">
-                    <span id="closeModal">&times;</span>
-                    <p id="feedbackMessage"></p>
-                </div>
-            </div>
-                    
-                
-            <div class="gameButtons">
-                <button id="guessButton">guess</button>
-                <button id="restartButton"> restart</button>
-            </div>
-            
-        </div>
-
     </div>
 
+    <div class="main">
+        <div class="game-card">
+            <h1 id="roundHeader">ROUND 1</h1>
+            <h3 id="timer">00s</h4>
+            
+            <div class="gameLocation" id="gameLocation">
+                <img src="./locations/location1.png" alt="location">
+            </div>
 
-    
+            <div class="map-container">
+                <div id="map"></div>
+            </div>
 
-    <script src="./static/game.js"></script>
+            <div class="game-ui">
+                <div class="gameButtons">
+                    <button id="guessButton" class="primary-btn">guess</button>
+                    <button id="restartButton" class="secondary-btn">restart</button>
+                </div>
+                <div class="score-badge">
+                    <p id="scroe">score: 0 🦬</p>
+                </div>
 
+                
+            </div>
+        </div>
+    </div>
+
+    <div id="feedbackModal" class="modal hidden">
+        <div class="modalContent">
+            <span id="closeModal">&times;</span>
+            <p id="feedbackMessage"></p>
+        </div>
+    </div>
 
     <footer>
         <div class="footer-container">
             <div class="cord">
                 <h3>Join the Community 🌐</h3>
-                <p>Connect via Discord to get the latest updates on <strong>UofM Campus Guesser</strong>. Join our team as a developer or help support the website!</p>
-                
+                <p>Connect via Discord to get the latest updates on <strong>UofM Campus Guesser</strong>.</p>
                 <div class="cta-row">
                     <div class="discord-cta">
-                        <span>JOIN THE DISCORD</span>
-                        <a href="https://discord.gg/s3Sta8cj5B">
-                            <button class="discord-btn">
-                                <i class='fab fa-discord'></i> Open Discord
-                            </button>
-                        </a>
+                        <a href="https://discord.gg/s3Sta8cj5B"><button class="discord-btn"><i class='fab fa-discord'></i> Discord</button></a>
                     </div>
-
                     <div class="instagram-cta">
-                        <span>FOLLOW US</span>
-                        <a href="https://www.instagram.com/umanitobaguesser/" target="_blank">
-                            <button class="instagram-btn">
-                                <i class="fa-brands fa-instagram"></i> Open Instagram
-                            </button>
-                        </a>
+                        <a href="https://www.instagram.com/umanitobaguesser/" target="_blank"><button class="instagram-btn"><i class="fa-brands fa-instagram"></i> Instagram</button></a>
                     </div>
                 </div>
+            </div>
             <div class="footer-bottom">
                 <p>&copy; 2026 UofM Campus Guesser | Built by Bisons for Bisons 🦬</p>
-                <p>umanitobaguesser@gmail.com</p>
             </div>
         </div>
     </footer>
-    
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./static/game.js"></script>
 </body>
 </html>

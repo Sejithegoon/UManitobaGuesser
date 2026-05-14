@@ -1,134 +1,84 @@
-/* main */
+
 * {
-    font-family: "Bebas Neue", sans-serif;
-    font-weight: 500;
-    font-style: normal;
-    color: rgb(255, 255, 255);
-}
-
-body{
-    background-color: #f3aa1d;
-}
-
-/* basic button */
-a button{
-    text-align: center;
-    border: none;
-    background-color: #4f2e1d;
-    padding: 5px 24px;
-    font-size: clamp(1rem, 3.5vw, 2rem);
-    cursor: pointer;
-    border-radius: 11px;
-    transition-duration: 0.5s;
-}
-
-a button:hover{
-    transform: scale(1.1);
-    background-color: #362014;
-}
-
-button{
-    text-align: center;
-    border: none;
-    background-color: #4f2e1d;
-    padding: 5px 24px;
-    font-size: clamp(1rem, 3.5vw, 2rem);
-    cursor: pointer;
-    border-radius: 11px;
-    transition-duration: 0.5s;
-
-}
-button:hover{
-    transform: scale(1.4);
-    background-color: #362014;
-    color: #f3aa1d;
-}
-
-
-/* header */
-
-.header {
-    background-color: #4f2e1d;
-    padding: 10px 40px;
-}
-.headerElements {
-    display: flex;
-    justify-content: space-between; 
-    align-items: center;           
-    max-width: 1200px;             
-    margin: 0 auto;               
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    justify-content: space-between;
-}
-.logo h1 {
-    cursor: pointer;
-    margin: 0;
-    font-size: 2.5rem;
-    transition-duration: 1.5s;
-}
-
-
-.logo h1:hover{
-    color: #f3aa1d;
-    margin: 0;
-    transform: scale(1.1);
-}
-.logo {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.logo img{
-    max-width: 70px;
-    transition-duration: 1s;
-}
-.logo img:hover{
-    transform: scale(1.1);
-}
-
-
-.logo ul {
-    margin-top: 20px;
-    display: flex;
-    list-style: none;
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    gap: 20px; 
-    
 }
 
-.logo ul li a {
-    font-size: 20px;
+body {
+    padding-top: 60px; 
+    overflow-x: hidden; 
+    width: 100%;
+    background-color: #f8f5ee;
+}
+
+
+.nav {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;                        
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%; 
+    z-index: 1000;
+    background-color: #f8f5ee; 
     
+    
+    padding: 15px 50px; 
+    border-bottom: 4px solid #F2A900;
+}
+
+.links ul {
+    display: flex;
+    align-items: center;
+    gap: 30px; 
+}
+
+a, ul {
+    list-style: none;
     text-decoration: none;
+}
+
+.logo img {
+    display: block;
+    width: 40px;
+    height: 40px;
+}
+
+.links .playButton button {
+    font-size: 15px;
+    padding: 5px 20px;
+}
+
+
+@media (max-width: 600px) {
+    .nav {
+        flex-direction: column; 
+        justify-content: center; 
+        gap: 15px;
+        padding: 15px 0;
+    }
     
+    .links ul {
+        gap: 15px;
+    }
 
-}
-.logo ul li a:hover {
-    color: #f3aa1d;
-    
-
-}
-.logo ul li{
-    transition-duration: 1s;
-
-}
-.logo ul li:hover{
-    transform: scale(1.5);
-
+    body {
+        padding-top: 120px; 
+    }
 }
 
-/* footer */
+
+
+
+
+/*footer*/
+
 
 footer {
-    background-color: #2c1a11; 
-    color: #ffffff;
+    background-color: #f8f5ee; 
+    color: #000000;
     padding: 40px 20px 20px 20px;
     margin-top: 50px;
     text-align: center;
@@ -148,7 +98,7 @@ footer {
 .cord p {
     font-size: 16px;
     line-height: 1.6;
-    color: #ffffff;
+    color: #000000;
     margin-bottom: 25px;
 }
 
@@ -196,7 +146,7 @@ footer {
     justify-content: center;
     align-items: center;
     gap: 20px;
-    flex-wrap: wrap; /* mobile safe */
+    flex-wrap: wrap; 
 }
 
 .instagram-cta {
@@ -237,14 +187,25 @@ footer {
     transform: scale(1.05);
     filter: brightness(0.9);
 }
-/* mobile */
-@media (max-width: 600px) {
-    .headerElements, .logo {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-    }
-    .logo ul {
-        justify-content: center;
-    }
+
+i{
+    color: #f8f5ee;
+}
+
+
+
+.accountButtons button {
+    font-size: 15px;
+    padding: 5px 20px;
+    background: #fbb315;
+    color: rgb(0, 0, 0);
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s ease;
+    border-radius: 10px;
+    background: #003471;
+    color: #ffffff;
 }

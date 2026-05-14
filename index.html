@@ -5,39 +5,83 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Iceland&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Oswald:wght@200..700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="./static/main.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UofM Campus Geusser</title>
-    <link rel="shortcut icon" href="./assets/logo-main.png" type="image/x-icon">
-    <link rel="stylesheet" href="./static/index.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/edb895a006.js" crossorigin="anonymous"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UManitoba Guesser</title>
+    <link rel="shortcut icon" href="./assets/logo-main.webp" type="image/x-icon">
+    <link rel="stylesheet" href="./static/main.css">
+    <link rel="stylesheet" href="./static/index.css">
 </head>
 <body>
 
-    <div class="banner">
-        <div class="bannerContent">
-            <div class="bannerText">
-                <p>Welcome, Bisons! 🦬👋 Think you know every location on campus? 🏫❓ Put your knowledge to the test! 🧠💪 Explore hidden gems 🔍✨, master your surroundings 🧭, and see if you can pin your location with 100% accuracy! 📍🎯💯  •  Current Status: Free Play Mode Active! 🎮  •  Coming Soon: 🔔 Create an account to save your high scores and challenge friends! 🏆👫🔥</p>
-            </div>
+
+
+    <div class="nav">
+        <div class="logo">
+            <img src="./assets/logo-main.webp" alt="logo">
         </div>
+
+        <div class="links">
+            <ul>
+                <li></li><a class="playButton" id="playLink" href="./play.html?diff=easy"><button>play</button></a></li>
+                <li><a href="./about us.html">About Us</a></li>
+                <li><a class="accountButtons" href="#"><button>login</button></a></li>
+
+            </ul>
+        </div>
+        
     </div>
 
 
-   <div class="homePageElements">
-        <div class="bisonImg">
-            <img src="./assets/logo-main.webp" alt="Bison">
-        </div>
-        <h1>UManitoba Guesser</h1>
+    <div class="main">
+        <div class="mainConetent">
+            <div class="bisonImg">
+                <img src="./assets/logo-main.webp" alt="billyTheBison">
+            </div>
 
-        <div class="play">
-            <a href="./play.html"><button>Play</button></a>
-        </div>
-        
-        <div class="login">
-            <a href="#"><button>Login</button></a>
-            <a href="#"><button>Sign Up</button></a>
+            <h1>UManitoba Geusser</h1>
+
+
+
+            <div class="gameOptions">
+                <h3>select difficulty</h3>
+                <div class="line"></div>
+                <div class="options" id="difficultySelector">
+                    <button class="easy" onclick="selectDifficulty('easy', this)">easy</button>
+                    <button class="medium" onclick="selectDifficulty('medium', this)">medium</button>
+                    <button class="hard" onclick="selectDifficulty('hard', this)">hard</button>
+                </div>
+            </div>
+
+            <div class="playButton">
+                <a id="playLink" href="./play.html?diff=easy"><button class="play">play</button></a>
+            </div>
+
+            <script>
+                function selectDifficulty(diff, buttonElement) {
+                    
+                    document.getElementById('playLink').href = `./play.html?diff=${diff}`;
+                    
+                    
+                    const buttons = document.querySelectorAll('#difficultySelector button');
+                    buttons.forEach(btn => btn.style.border = "none");
+                    
+                    
+                    buttonElement.style.border = "4px solid #fbb315";
+                }
+
+                
+                window.onload = () => {
+                    const easyBtn = document.querySelector('.easy');
+                    selectDifficulty('easy', easyBtn);
+                };
+            </script>
+
+
+            <div class="accountButtons">
+                <a href="#"><button>login</button></a>
+                <a href="#"><button>signup</button></a>
+            </div>
         </div>
     </div>
 
@@ -73,6 +117,9 @@
             </div>
         </div>
     </footer>
+
+
+
     
 </body>
 </html>

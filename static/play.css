@@ -1,132 +1,193 @@
-
-html, body{
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    width: 100%;
-    overflow-x: hidden;
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    color: rgb(0, 0, 0);
 }
 
-.game {
+
+
+.main {
     display: flex;
-    flex-direction: column; 
-    align-items: center;    
     justify-content: center;
+    align-items: flex-start; 
+    min-height: 100vh;
+    padding: 40px 20px;
+    background-color: #f8f5ee;
+}
+
+
+.game-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    max-width: 900px;
     width: 100%;
-    padding: 20px 0;
 }
 
 
+#roundHeader {
+    font-family: "Bebas Neue", sans-serif;
+    color: #502c1e;
+    font-size: 3rem;
+    margin: 0;
+}
+
+/* Location Image */
 .gameLocation img {
-    max-width: 80vw; 
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    width: 100%;
+    
+    object-fit: cover;
+    border-radius: 10px;
+    border: 4px solid #003471;
 }
 
-
-.map {
-    width: 90%;     
-    max-width: 80vw;
-    margin: 0 auto;  
+/* Map Styling */
+.map-container {
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #fbb315;
 }
 
 #map {
-    width: 100%;    
-    height: 500px;  
-    border-radius: 5px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    width: 100%;
+    height: 100%;
 }
 
-.game h1{
-    background-color: #4f2e1dab;
-    padding: 10px 24px;
-    border-radius: 7px;
-
-}
-
-
-.stats {
-    width: 90%;
-    max-width: 800px;
-    margin: 20px auto; 
+/* UI Elements */
+.game-ui {
     display: flex;
-    flex-direction: column; 
-    align-items: flex-start; 
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.score-badge {
+    background-color: #502c1e;
+    padding: 10px 20px;
+    border-radius: 8px;
 }
 
 #scroe {
+    color: #ffffff;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.5rem;
     margin: 0;
-    font-size: clamp(0.8rem, 7vw, 1.5rem);
-    text-align: left;
-    background-color: #4f2e1dab;
-    padding: 10px 24px;
-    border-radius: 7px;
 }
 
+/* Buttons */
 .gameButtons {
-    padding-top: 15px;
     display: flex;
-    margin: 0 auto;
-    gap: 100px;
+    gap: 15px;
+}
+
+.primary-btn {
+    background-color: #003471;
+    color: white;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.5rem;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.secondary-btn {
+    background-color: #fbb315;
+    color: #000;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.5rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+.modalContent {
+    background-color: #502c1e;
+    color: #f8f5ee;
+    padding: 40px;
+    border-radius: 20px;
+    border: 4px solid #fbb315;
+    font-family: "Bebas Neue", sans-serif;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 600px) {
+    .game-ui {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .gameButtons {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 
-.stats .feedbackMessage{
-    display: flex;
-    margin: auto;
-    justify-content: center;
-    padding-bottom: 25px;
-    font-size: 30px;
-    
-}
 
-.stats .feedbackMessage #feedbackMessage{
-    padding: 17px 24px;
-    border-radius: 12px;
-}
 
 .modal {
     position: fixed;
-    top: 0;
+    z-index: 2000;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-
-    background-color: rgba(0, 0, 0, 0.6);
-
+    background-color: rgba(0, 0, 0, 0.7); 
     display: flex;
     justify-content: center;
     align-items: center;
-
-    z-index: 999;
 }
 
-.hidden {
+.modal.hidden {
     display: none;
 }
 
 .modalContent {
-    background-color: #2c1a11;
-    color: white;
-    padding: 30px 40px;
-    border-radius: 15px;
-    text-align: center;
-    font-size: 1.5rem;
+    background-color: #f8f5ee;
+    color: #f8f5ee;
+    padding: 40px;
+    border-radius: 20px;
+    border: 2px solid #fbb315;
+    font-family: "Bebas Neue", sans-serif;
+    letter-spacing: 1px;
     position: relative;
-
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    text-align: center;
+    max-width: 80vw;
 }
 
+#feedbackMessage {
+    white-space: pre-wrap; 
+    font-size: 1.5rem;
+}
 
 #closeModal {
     position: absolute;
     top: 10px;
-    right: 15px;
-    font-size: 28px;
+    right: 20px;
+    font-size: 30px;
     cursor: pointer;
+    color: #fbb315;
 }
 
-.modalContent p {
-    white-space: pre-line; /* preserves line breaks in JS string */
-    font-size: 1.2rem;
+#closeModal:hover {
+    color: white;
 }
