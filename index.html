@@ -1,116 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7269426922041265"
-     crossorigin="anonymous"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Iceland&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Oswald:wght@200..700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7269426922041265" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
-    <script src="https://kit.fontawesome.com/edb895a006.js" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UManitoba Guesser</title>
     <link rel="shortcut icon" href="./assets/logo-main.webp" type="image/x-icon">
     <link rel="stylesheet" href="./static/main.css">
     <link rel="stylesheet" href="./static/index.css">
+    <script src="https://kit.fontawesome.com/edb895a006.js" crossorigin="anonymous"></script>
     <meta name="google-adsense-account" content="ca-pub-7269426922041265">
+    <script>
+        // Apply theme immediately to prevent FOUC
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
 </head>
 <body>
-
-
-
     <div class="nav">
         <div class="logo">
-            <img src="./assets/logo-main.webp" alt="logo">
+            <a href="./index.html"><img src="./assets/logo-main.webp" alt="logo"></a>
         </div>
-
         <div class="links">
             <ul>
-                <li></li><a class="playButton" id="playLink" href="./play.html?diff=easy"><button>play</button></a></li>
+                <li><a class="playButton" id="playLinkNav" href="./play.html?diff=easy&rounds=5"><button>play</button></a></li>
                 <li><a href="./about us.html">About Us</a></li>
                 <li><a class="accountButtons" href="#"><button>login</button></a></li>
-
+                <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button></li>
             </ul>
         </div>
-        
     </div>
-
 
     <div class="main">
         <div class="mainConetent">
             <div class="bisonImg">
                 <img src="./assets/logo-main.webp" alt="billyTheBison">
             </div>
-
-            <h1>UManitoba Geusser</h1>
-
-
+            <h1>UManitoba Guesser</h1>
 
             <div class="gameOptions">
-                <h3>select difficulty</h3>
-                <div class="line"></div>
+                <h3>Select Difficulty</h3>
                 <div class="options" id="difficultySelector">
-                    <button class="easy" onclick="selectDifficulty('easy', this)">easy</button>
-                    <button class="medium" onclick="selectDifficulty('medium', this)">medium</button>
-                    <button class="hard" onclick="selectDifficulty('hard', this)">hard</button>
+                    <button class="easy selected" onclick="selectDifficulty('easy', this)">Easy</button>
+                    <button class="medium" onclick="selectDifficulty('medium', this)">Medium</button>
+                    <button class="hard" onclick="selectDifficulty('hard', this)">Hard</button>
                 </div>
             </div>
 
-            <div class="playButton">
-                <a id="playLink" href="./play.html?diff=easy"><button class="play">play</button></a>
+            <div class="gameOptions" style="margin-top: 15px;">
+                <h3>Select Rounds</h3>
+                <div class="options" id="roundSelector">
+                    <button class="selected" onclick="selectRounds('5', this)">5</button>
+                    <button onclick="selectRounds('10', this)">10</button>
+                    <button onclick="selectRounds('20', this)">20</button>
+                    <button onclick="selectRounds('unlimited', this)">Unlimited</button>
+                </div>
+            </div>
+
+            <div class="playButton" style="margin-top: 10px;">
+                <a id="playLinkBtn" href="./play.html?diff=easy&rounds=5"><button class="play">PLAY NOW</button></a>
             </div>
 
             <script>
-                function selectDifficulty(diff, buttonElement) {
-                    // Update ALL play links on the page
-                    const playLinks = document.querySelectorAll('#playLink');
-                    playLinks.forEach(link => {
-                        link.href = `./play.html?diff=${diff}`;
+                // State to hold both selections
+                let currentDiff = 'easy';
+                let currentRounds = '5';
+
+                function updatePlayLinks() {
+                    const playLinks = document.querySelectorAll('a[href^="./play.html"]');
+                    playLinks.forEach(link => { 
+                        link.href = `./play.html?diff=${currentDiff}&rounds=${currentRounds}`; 
                     });
-                    
-                    const buttons = document.querySelectorAll('#difficultySelector button');
-                    buttons.forEach(btn => btn.style.border = "none");
-                    buttonElement.style.border = "4px solid #fbb315";
                 }
 
-                
-                
+                function selectDifficulty(diff, buttonElement) {
+                    currentDiff = diff;
+                    const buttons = document.querySelectorAll('#difficultySelector button');
+                    buttons.forEach(btn => btn.classList.remove('selected'));
+                    buttonElement.classList.add('selected');
+                    updatePlayLinks();
+                }
+
+                function selectRounds(rounds, buttonElement) {
+                    currentRounds = rounds;
+                    const buttons = document.querySelectorAll('#roundSelector button');
+                    buttons.forEach(btn => btn.classList.remove('selected'));
+                    buttonElement.classList.add('selected');
+                    updatePlayLinks();
+                }
+
+                // Initialize links on load just in case
+                document.addEventListener('DOMContentLoaded', updatePlayLinks);
             </script>
 
-
             <div class="accountButtons">
-                <a href="#"><button>login</button></a>
-                <a href="#"><button>signup</button></a>
+                <a href="#"><button>Login</button></a>
+                <a href="#"><button>Sign Up</button></a>
             </div>
         </div>
     </div>
-
 
     <footer>
         <div class="footer-container">
             <div class="cord">
                 <h3>Join the Community 🌐</h3>
                 <p>Connect via Discord to get the latest updates on <strong>UofM Campus Guesser</strong>. Join our team as a developer or help support the website!</p>
-                
                 <div class="cta-row">
                     <div class="discord-cta">
                         <span>JOIN THE DISCORD</span>
-                        <a href="https://discord.gg/s3Sta8cj5B">
-                            <button class="discord-btn">
-                                <i class='fab fa-discord'></i> Open Discord
-                            </button>
-                        </a>
+                        <a href="https://discord.gg/s3Sta8cj5B"><button class="discord-btn"><i class='fab fa-discord'></i> Open Discord</button></a>
                     </div>
-
                     <div class="instagram-cta">
                         <span>FOLLOW US</span>
-                        <a href="https://www.instagram.com/umanitobaguesser/" target="_blank">
-                            <button class="instagram-btn">
-                                <i class="fa-brands fa-instagram"></i> Open Instagram
-                            </button>
-                        </a>
+                        <a href="https://www.instagram.com/umanitobaguesser/" target="_blank"><button class="instagram-btn"><i class="fa-brands fa-instagram"></i> Open Instagram</button></a>
                     </div>
                 </div>
+            </div>
             <div class="footer-bottom">
                 <p>&copy; 2026 UofM Campus Guesser | Built by Bisons for Bisons 🦬</p>
                 <p>umanitobaguesser@gmail.com</p>
@@ -118,8 +124,20 @@
         </div>
     </footer>
 
-
-
-    
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+        }
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = document.documentElement.classList.contains('dark-mode') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateThemeIcon);
+    </script>
 </body>
 </html>

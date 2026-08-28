@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7269426922041265"
-     crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7269426922041265" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | UManitoba Guesser</title>
     <link rel="shortcut icon" href="./assets/logo-main.webp" type="image/x-icon">
-    <link rel="shortcut icon" href="./assets/logo-main.png" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./static/main.css">
     <link rel="stylesheet" href="./static/about.css">
     <script src="https://kit.fontawesome.com/edb895a006.js" crossorigin="anonymous"></script>
     <meta name="google-adsense-account" content="ca-pub-7269426922041265">
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
 </head>
 <body>
-
     <div class="nav">
         <div class="logo">
             <a href="./index.html"><img src="./assets/logo-main.webp" alt="logo"></a>
@@ -23,8 +24,9 @@
         <div class="links">
             <ul>
                 <li><a href="./index.html">Home</a></li>
-                <li><a class="playButton" id="playLink" href="./index.html"><button>play</button></a></li>
-                <li><a class="accountButtons" href="#"><button>login</button></a></li>
+                <li><a class="playButton" id="playLink" href="./index.html"><button>Play</button></a></li>
+                <li><a class="accountButtons" href="#"><button>Login</button></a></li>
+                <li><button class="theme-toggle" onclick="toggleTheme()"><i id="themeIcon" class="fa-solid fa-moon"></i></button></li>
             </ul>
         </div>
     </div>
@@ -60,7 +62,7 @@
 
             <div class="cta-section">
                 <h2>Ready to test your knowledge?</h2>
-                <a href="./index.html"><button class="primary-btn">Play Now</button></a>
+                <a href="./play.html?diff=easy"><button class="primary-btn" style="margin-top: 15px;">Play Now</button></a>
             </div>
         </div>
     </main>
@@ -85,5 +87,20 @@
         </div>
     </footer>
 
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+        }
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = document.documentElement.classList.contains('dark-mode') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateThemeIcon);
+    </script>
 </body>
 </html>

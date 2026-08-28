@@ -1,3 +1,38 @@
+/* static/main.css */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans:wght@400;500;600&display=swap');
+
+:root {
+    /* Light Theme (Default) */
+    --bg-color: #f4f2ea;
+    --nav-bg: #f4f2ea;
+    --card-bg: #ffffff;
+    --text-main: #222222;
+    --text-muted: #666666;
+    --primary-color: #0b3b75; /* Polished Navy */
+    --primary-hover: #072a54;
+    --secondary-color: #e6a10b; /* Polished Gold */
+    --secondary-hover: #c98c09;
+    --border-radius: 12px;
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+html.dark-mode {
+    /* Dark Theme */
+    --bg-color: #121212;
+    --nav-bg: #1a1a1a;
+    --card-bg: #1e1e1e;
+    --text-main: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --primary-color: #1a5296; 
+    --primary-hover: #2163b3;
+    --secondary-color: #d19208;
+    --secondary-hover: #e6a10b;
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
 
 * {
     box-sizing: border-box;
@@ -6,13 +41,27 @@
 }
 
 body {
-    padding-top: 60px; 
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Fira Sans', sans-serif;
+    padding-top: 70px; 
     overflow-x: hidden; 
     width: 100%;
-    background-color: #f8f5ee;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+h1, h2, h3, h4, .bebas {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
 
+a, ul {
+    list-style: none;
+    text-decoration: none;
+}
+
+/* Navigation */
 .nav {
     display: flex;
     justify-content: space-between; 
@@ -22,67 +71,102 @@ body {
     left: 0;
     width: 100%; 
     z-index: 1000;
-    background-color: #f8f5ee; 
-    
-    
-    padding: 15px 50px; 
-    border-bottom: 4px solid #F2A900;
+    background-color: var(--nav-bg); 
+    padding: 12px 50px; 
+    border-bottom: 3px solid var(--secondary-color);
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.3s ease;
+}
+
+.logo img {
+    display: block;
+    width: 45px;
+    height: 45px;
+    transition: transform 0.2s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
 }
 
 .links ul {
     display: flex;
     align-items: center;
-    gap: 30px; 
+    gap: 25px; 
 }
 
-a, ul {
-    list-style: none;
-    text-decoration: none;
+.links a {
+    color: var(--text-main);
+    font-weight: 500;
+    font-size: 1.05rem;
+    transition: color 0.2s;
 }
 
-.logo img {
-    display: block;
-    width: 40px;
-    height: 40px;
+.links a:hover {
+    color: var(--secondary-color);
 }
 
-.links .playButton button {
-    font-size: 15px;
-    padding: 5px 20px;
+/* Buttons */
+button {
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
 }
 
-
-@media (max-width: 600px) {
-    .nav {
-        flex-direction: column; 
-        justify-content: center; 
-        gap: 15px;
-        padding: 15px 0;
-    }
-    
-    .links ul {
-        gap: 15px;
-    }
-
-    body {
-        padding-top: 120px; 
-    }
+.theme-toggle {
+    background: transparent;
+    color: var(--text-main);
+    font-size: 1.2rem;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+.theme-toggle:hover {
+    color: var(--secondary-color);
+    transform: scale(1.1);
+}
 
+.accountButtons button, .playButton button {
+    padding: 8px 24px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
+.accountButtons button {
+    background: var(--secondary-color);
+    color: #121212;
+}
 
+.accountButtons button:hover {
+    background: var(--secondary-hover);
+    transform: translateY(-2px);
+}
 
-/*footer*/
+.playButton button {
+    background: var(--primary-color);
+    color: #ffffff;
+}
 
+.playButton button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
 
+/* Footer */
 footer {
-    background-color: #f8f5ee; 
-    color: #000000;
-    padding: 40px 20px 20px 20px;
-    margin-top: 50px;
+    background-color: var(--nav-bg); 
+    color: var(--text-main);
+    padding: 50px 20px 30px 20px;
+    margin-top: 60px;
     text-align: center;
-    border-top: 4px solid #F2A900;
+    border-top: 3px solid var(--secondary-color);
+    transition: background-color 0.3s ease;
 }
 
 .footer-container {
@@ -91,121 +175,79 @@ footer {
 }
 
 .cord h3 {
-    color: #F2A900;
+    color: var(--secondary-color);
+    font-size: 2rem;
     margin-bottom: 15px;
 }
 
 .cord p {
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1.6;
-    color: #000000;
-    margin-bottom: 25px;
+    color: var(--text-muted);
+    margin-bottom: 30px;
 }
 
-.discord-cta {
+.cta-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap; 
+}
+
+.discord-cta, .instagram-cta {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-.discord-cta span {
-    font-weight: bold;
-    font-size: 12px;
+.discord-cta span, .instagram-cta span {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text-muted);
     letter-spacing: 1px;
 }
 
 .discord-btn {
     background-color: #5865F2; 
-    color: rgb(255, 255, 255);
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
+    color: #ffffff;
+    padding: 12px 28px;
+    font-size: 1rem;
 }
 
 .discord-btn:hover {
     background-color: #4752c4;
-    transform: scale(1.05); 
-}
-
-
-
-.footer-bottom {
-    margin-top: 40px;
-    font-size: 12px;
-    opacity: 0.7;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 20px;
-}
-.cta-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap; 
-}
-
-.instagram-cta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.instagram-cta span {
-    font-weight: bold;
-    font-size: 12px;
-    letter-spacing: 1px;
+    transform: translateY(-2px); 
 }
 
 .instagram-btn {
-    background: linear-gradient(
-        45deg,
-        #f58529,
-        #dd2a7b,
-        #8134af,
-        #515bd4
-    );
-    color: white;
-
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-
-    transition: transform 0.2s, filter 0.2s;
+    background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+    color: #ffffff;
+    padding: 12px 28px;
+    font-size: 1rem;
 }
 
 .instagram-btn:hover {
-    transform: scale(1.05);
-    filter: brightness(0.9);
+    transform: translateY(-2px);
+    filter: brightness(1.1);
 }
 
-i{
-    color: #f8f5ee;
+.footer-bottom {
+    margin-top: 50px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border-top: 1px solid rgba(128, 128, 128, 0.2);
+    padding-top: 25px;
 }
 
-
-
-.accountButtons button {
-    font-size: 15px;
-    padding: 5px 20px;
-    background: #fbb315;
-    color: rgb(0, 0, 0);
-}
-
-button {
-    cursor: pointer;
-    border: none;
-    transition: transform 0.2s ease;
-    border-radius: 10px;
-    background: #003471;
-    color: #ffffff;
+@media (max-width: 768px) {
+    .nav {
+        flex-direction: column; 
+        padding: 15px 20px;
+        gap: 15px;
+    }
+    body {
+        padding-top: 130px; 
+    }
 }

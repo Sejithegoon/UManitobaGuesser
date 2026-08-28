@@ -1,112 +1,103 @@
-/* 1. Global Reset - Keep this to prevent scroll issues */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: "Bebas Neue", sans-serif;
-    font-weight: 500;
-    font-style: normal;
-    color: rgb(0, 0, 0);
-}
-
-body {
-    overflow-x: hidden; 
-}
-
-
+/* static/index.css */
 .main {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 60px); 
+    min-height: calc(100vh - 130px); 
     width: 100%;
-    padding: 20px;
+    padding: 40px 20px;
 }
 
-/* 3. The Content Card */
 .mainConetent {
-    display: grid;
-    gap: 20px;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    padding: 50px 30px;
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
     max-width: 600px;
     width: 100%;
-    justify-items: center; 
+    text-align: center;
+    transition: background-color 0.3s ease;
 }
 
-
 .bisonImg {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
 }
 
 .bisonImg img {
     display: block;
-    width: 110%;
-    height: 110%;
-    object-fit: cover;
-}
-
-/* 5. Typography & Elements */
-h1, h3 {
-    text-align: center;
-    margin: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 h1 {
-    font-size: 3rem; 
-    color: #502c1e;
-    line-height: 1;
+    font-size: 3.5rem; 
+    color: var(--primary-color);
+    line-height: 1.1;
+}
+
+.gameOptions {
+    width: 100%;
+    margin-top: 10px;
 }
 
 .gameOptions h3 {
-    color: rgba(0, 0, 0, 0.347);
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    margin-bottom: 15px;
 }
 
 .options {
-    margin-top: 10px;
     display: flex;
-    gap: 20px;
+    gap: 15px;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
-/* 6. Buttons */
-
-.options button{
-    font-size:20px;
-    padding: 4px 20px;
+.options button {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    border: 2px solid transparent;
+    font-size: 1.1rem;
+    padding: 10px 25px;
+    box-shadow: var(--shadow-sm);
 }
-button {
-    cursor: pointer;
-    border: none;
-    transition: transform 0.2s ease;
-    border-radius: 10px;
-    background: #003471;
+
+.options button:hover {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.options button.selected {
+    border: 2px solid var(--secondary-color);
+    background-color: var(--primary-color);
     color: #ffffff;
 }
 
-.playButton button {
-    font-size: 35px;
-    padding: 10px 30px;
+.playButton .play {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 2.5rem;
+    padding: 15px 50px;
+    background: var(--secondary-color);
+    color: #121212;
+    box-shadow: var(--shadow-md);
+    letter-spacing: 2px;
 }
 
+.playButton .play:hover {
+    background: var(--secondary-hover);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
 
 .accountButtons {
     display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.accountButtons button {
-    font-size: 15px;
-    padding: 5px 20px;
-    background: #fbb315;
-    color: rgb(0, 0, 0);
-}
-
-/* Hover Effect */
-button:hover {
-    transform: scale(1.1); /* 'scale' is cleaner than 'scale: calc(1.1)' */
+    gap: 15px;
+    margin-top: 10px;
 }

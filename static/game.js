@@ -1,6 +1,6 @@
-
 const params = new URLSearchParams(window.location.search);
 const difficulty = params.get('diff') || 'easy'; 
+const selectedRounds = params.get('rounds') || '5'; 
 
 const difficultySettings = {
     'easy': 30,
@@ -19,8 +19,8 @@ L.tileLayer('http://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
 }).addTo(map);
 
 // 2. Icons
-var pin = L.icon({ iconUrl: './assets/pin.svg', iconSize: [20, 20], popupAnchor: [-3, -76] });
-var pin1 = L.icon({ iconUrl: './assets/pin3.webp', iconSize: [25, 25], popupAnchor: [-3, -76] });
+var pin = L.icon({ iconUrl: './assets/pin.svg', iconSize: [25, 25], popupAnchor: [-3, -76] });
+var pin1 = L.icon({ iconUrl: './assets/pin3.webp', iconSize: [30, 30], popupAnchor: [-3, -76] });
 
 // 3. Game State
 const gameState = {
@@ -43,7 +43,6 @@ const closeBtn = document.getElementById("closeModal");
 const timerDisplay = document.getElementById("timer");
 const guessBtn = document.getElementById("guessButton");
 
-// Restored Feedback Logic
 function showFeedback(message, duration = null) {
     feedbackText.innerText = message;
     modal.classList.remove("hidden");
@@ -69,20 +68,11 @@ window.onclick = (e) => {
     if (e.target === modal) hideFeedback();
 };
 
-const gameRules = `
-📜 Game Rules 📜
-
-1️⃣ Max Points: 25,000
-2️⃣ Total Rounds: 5
-3️⃣ Time limits vary by difficulty!
-4️⃣ You can move your pin before guessing.
-
-Good luck, Bison! 🦬
-`;
-
-window.addEventListener('load', () => {
+function displayGameRules() {
+    const maxPossiblePoints = gameState.maxRounds * 5000;
+    const gameRules = `📜 Game Rules 📜\n\n1️⃣ Max Points: ${maxPossiblePoints.toLocaleString()}\n2️⃣ Total Rounds: ${gameState.maxRounds}\n3️⃣ Time limits vary by difficulty!\n4️⃣ You can move your pin before guessing.\n\nGood luck, Bison! 🦬`;
     showFeedback(gameRules);
-});
+}
 
 // 5. Timer Logic
 function startTimer() {
@@ -109,7 +99,7 @@ function handleTimeOut() {
     const targetCords = L.latLng(currentData.cords[0], currentData.cords[1]);
     targetMarker = L.marker(targetCords, {icon: pin1}).addTo(map);
     
-    guessBtn.innerText = "next round";
+    guessBtn.innerText = "Next Round";
 }
 
 // 6. Game Flow
@@ -120,7 +110,7 @@ function setupRound() {
     
     document.getElementById('roundHeader').innerText = `ROUND ${gameState.currntRound}`;
     document.querySelector('#gameLocation img').src = `./locations/IMG/${currentData.name}.jpg`;
-    guessBtn.innerText = "guess";
+    guessBtn.innerText = "Guess";
     
     if (locationGuess) map.removeLayer(locationGuess);
     if (targetMarker) map.removeLayer(targetMarker);
@@ -129,7 +119,6 @@ function setupRound() {
     locationGuess = null;
     gameState.isGuessed = false;
     gameState.userGuess = null;
-    
     
     if (gameStarted) {
         startTimer();
@@ -153,7 +142,8 @@ map.on('click', onMapClick);
 
 // 8. Guess Logic
 guessBtn.addEventListener('click', function() {
-    if (this.innerText === "next round") {
+    
+    if (gameState.isGuessed) {
         hideFeedback();
         nextRound();
         return;
@@ -162,7 +152,7 @@ guessBtn.addEventListener('click', function() {
     if (!gameState.userGuess) {
         showFeedback("⚠️ Click the map to place a pin first!", 2000);
         return;
-    };
+    }
 
     clearInterval(timerInterval);
     gameState.isGuessed = true;
@@ -175,47 +165,68 @@ guessBtn.addEventListener('click', function() {
     let score = Math.max(0, Math.floor(5000 - (distance * 2)));
     gameState.totalScore += score;
 
-    document.getElementById('scroe').innerText = `score: ${gameState.totalScore} 🦬`;
+    document.getElementById('score').innerText = `Score: ${gameState.totalScore} 🦬`;
     targetMarker = L.marker(targetCords, {icon: pin1}).addTo(map);
     connectionLine = L.polyline([gameState.userGuess, targetCords], {color: '#1d9fd9', dashArray: '5, 10'}).addTo(map);
 
     map.fitBounds(L.polyline([gameState.userGuess, targetCords]).getBounds(), { padding: [50, 50] });
 
-    // Restored old popup logic!
     if (distance < 1000) {
         showFeedback(`🔥 Great job!\nYou were only ${Math.round(distance)} meters away!\nScore: +${score}`, 3000);
     } else {
         showFeedback(`📍 You were ${distanceKM} km away.\nScore: +${score}`, 3000);
     }
 
-    this.innerText = "next round";
+    this.innerText = "Next Round";
 });
 
 function nextRound() {
     if (gameState.currntRound < gameState.maxRounds) {
         gameState.currntRound++;
         setupRound();
+        // Scroll smoothly to the top of the page for the next image
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
         guessBtn.style.display = "none";
         showFeedback(`🏁 Game Over!\nFinal Score: ${gameState.totalScore} 🦬`);
+        // Scroll to top on Game Over as well so they can see their final score easily
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 
-// 9. Init Game
-fetch("./locations/locations.json")
-    .then(res => res.json())
-    .then(data => {
-        gamePool = data.locations.sort(() => 0.5 - Math.random()).slice(0, 5);
-        gameState.maxRounds = gamePool.length;
-        setupRound();
-    });
+// Helper to load locations based on requested rounds
+function loadGameData(onComplete) {
+    fetch("./locations/locations.json")
+        .then(res => res.json())
+        .then(data => {
+            const shuffled = data.locations.sort(() => 0.5 - Math.random());
+            
+            if (selectedRounds === 'unlimited') {
+                gamePool = shuffled; 
+            } else {
+                const numRounds = Math.min(parseInt(selectedRounds) || 5, shuffled.length);
+                gamePool = shuffled.slice(0, numRounds);
+            }
+            
+            gameState.maxRounds = gamePool.length;
+            onComplete();
+        });
+}
 
-// 10. Restart Logic (Restored)
+// 9. Init Game
+window.addEventListener('load', () => {
+    loadGameData(() => {
+        setupRound();
+        displayGameRules();
+    });
+});
+
+// 10. Restart Logic
 document.getElementById('restartButton').addEventListener('click', function(){
     guessBtn.style.display = "inline-block";
     gameState.currntRound = 1;
     gameState.totalScore = 0;
-    document.getElementById('scroe').innerText = `score: 0 🦬`;
+    document.getElementById('score').innerText = `Score: 0 🦬`;
     
     map.eachLayer((layer) => {
         if (layer instanceof L.Marker || layer instanceof L.Polyline) {
@@ -223,12 +234,10 @@ document.getElementById('restartButton').addEventListener('click', function(){
         }
     });
 
-    fetch("./locations/locations.json")
-    .then(res => res.json())
-    .then(data => {
-        gamePool = data.locations.sort(() => 0.5 - Math.random()).slice(0, 5);
-        gameState.maxRounds = gamePool.length;
+    loadGameData(() => {
         setupRound();
-        startTimer(); // Immediately start timer on manual restart
+        startTimer();
+        // Scroll back to the top when restarting
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 });

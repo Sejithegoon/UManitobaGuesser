@@ -1,126 +1,114 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: "Bebas Neue", sans-serif;
-    font-weight: 500;
-    font-style: normal;
-    color: rgb(0, 0, 0);
-}
-
-
-
+/* static/about.css */
 .aboutMain {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 60px);
+    min-height: calc(100vh - 130px);
     padding: 40px 20px;
-    background-color: #f8f5ee; /* Matches your home background */
 }
 
-/* 2. The Content Card */
 .about-card {
-    background-color: #ffffff;
+    background-color: var(--card-bg);
     max-width: 900px;
     width: 100%;
-    padding: 50px;
-    border-radius: 15px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    padding: 60px 50px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
     text-align: center;
+    transition: background-color 0.3s ease;
 }
 
 .about-card h1 {
-    font-family: "Bebas Neue", sans-serif;
-    color: #003471; /* Navy Blue */
-    font-size: 3.5rem;
-    margin-bottom: 10px;
+    color: var(--primary-color);
+    font-size: 4rem;
+    margin-bottom: 15px;
 }
 
 .divider {
     height: 4px;
-    width: 60px;
-    background-color: #fbb315; /* Gold Accent */
-    margin: 0 auto 30px;
+    width: 80px;
+    background-color: var(--secondary-color);
+    margin: 0 auto 35px;
+    border-radius: 2px;
 }
 
 .about-card p {
-    font-family: 'Fira Sans', sans-serif; /* Cleaner body font */
-    color: #333;
-    font-size: 1.2rem;
-    line-height: 1.6;
-    margin-bottom: 40px;
+    color: var(--text-main);
+    font-size: 1.15rem;
+    line-height: 1.7;
+    margin-bottom: 50px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* 3. Grid for Widgets */
 .about-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 30px;
-    margin-bottom: 50px;
+    margin-bottom: 60px;
 }
 
 .info-box, .ig-widget {
-    background-color: #fcfaf5;
-    padding: 30px;
-    border-radius: 12px;
-    border-left: 5px solid #003471;
+    background-color: var(--bg-color);
+    padding: 40px 30px;
+    border-radius: var(--border-radius);
+    border-left: 6px solid var(--primary-color);
     text-align: left;
+    box-shadow: var(--shadow-sm);
 }
 
 .info-box h3, .ig-widget h3 {
-    font-size: 1.8rem;
-    color: #502c1e;
+    font-size: 2rem;
+    color: var(--primary-color);
     margin-bottom: 15px;
 }
 
-/* Instagram Widget Styling */
 .ig-placeholder {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 15px;
+    text-align: center;
 }
 
 .ig-placeholder i {
-    font-size: 40px;
-    color: #E1306C; /* Instagram Pink */
+    font-size: 45px;
+    color: #E1306C; 
 }
 
-/* Buttons */
 .primary-btn {
-    background-color: #003471;
+    background-color: var(--primary-color);
     color: white;
-    font-family: "Bebas Neue", sans-serif;
-    font-size: 1.5rem;
-    padding: 12px 40px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: transform 0.2s;
+    font-size: 1.2rem;
+    padding: 15px 40px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.primary-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
 }
 
 .secondary-btn {
-    background-color: #fbb315;
-    color: #000;
-    font-family: "Bebas Neue", sans-serif;
-    padding: 8px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    background-color: var(--secondary-color);
+    color: #121212;
+    padding: 10px 25px;
+    font-size: 1rem;
 }
 
-button:hover {
-    transform: scale(1.05);
+.secondary-btn:hover {
+    background-color: var(--secondary-hover);
+    transform: translateY(-2px);
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
     .about-grid {
         grid-template-columns: 1fr;
     }
     .about-card {
-        padding: 30px;
+        padding: 40px 25px;
     }
 }
