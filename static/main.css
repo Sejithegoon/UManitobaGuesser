@@ -100,7 +100,9 @@ a, ul {
     font-weight: 500;
     font-size: 1.05rem;
     transition: color 0.2s;
+    white-space: nowrap; 
 }
+
 
 .links a:hover {
     color: var(--secondary-color);
