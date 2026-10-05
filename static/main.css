@@ -133,21 +133,11 @@ button {
     transform: scale(1.1);
 }
 
-.accountButtons button, .playButton button {
+.playButton button {
     padding: 8px 24px;
     font-size: 0.95rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
-
-.accountButtons button {
-    background: var(--secondary-color);
-    color: #121212;
-}
-
-.accountButtons button:hover {
-    background: var(--secondary-hover);
-    transform: translateY(-2px);
 }
 
 .playButton button {
@@ -243,13 +233,104 @@ footer {
     padding-top: 25px;
 }
 
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.links a.active {
+    color: var(--secondary-color);
+}
+
+.menu-toggle {
+    display: none;
+    background: transparent;
+    color: var(--text-main);
+    font-size: 1.35rem;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-toggle:hover {
+    color: var(--secondary-color);
+}
+
+/* Mobile: links collapse into a dropdown, theme toggle stays beside the menu button */
 @media (max-width: 768px) {
     .nav {
-        flex-direction: column; 
-        padding: 15px 20px;
-        gap: 15px;
+        padding: 10px 16px;
     }
-    body {
-        padding-top: 130px; 
+    .logo img {
+        width: 42px;
+        height: 42px;
     }
+    .nav-right {
+        gap: 4px;
+    }
+    .menu-toggle {
+        display: flex;
+    }
+    .theme-toggle {
+        width: 44px;
+        height: 44px;
+    }
+    .theme-toggle:hover {
+        transform: none;
+    }
+    .links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--nav-bg);
+        border-bottom: 3px solid var(--secondary-color);
+        box-shadow: var(--shadow-md);
+        max-height: 0;
+        overflow: hidden;
+        visibility: hidden;
+        transition: max-height 0.25s ease, visibility 0.25s;
+    }
+    .nav.open .links {
+        max-height: 420px;
+        visibility: visible;
+    }
+    .links ul {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 6px 20px 18px;
+    }
+    .links li a {
+        display: block;
+        padding: 15px 4px;
+        font-size: 1.1rem;
+        border-bottom: 1px solid rgba(128, 128, 128, 0.18);
+    }
+    .links li.nav-play {
+        order: 9;
+    }
+    .links li a.playButton {
+        border-bottom: none;
+        padding: 16px 0 0;
+    }
+    .links .playButton button {
+        width: 100%;
+        padding: 13px;
+        font-size: 1rem;
+    }
+}
+
+/* ---------- Polish ---------- */
+button:focus-visible, a:focus-visible { outline: 3px solid var(--secondary-color); outline-offset: 3px; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.footer-links { display: flex; justify-content: center; gap: 22px; flex-wrap: wrap; margin-bottom: 14px; }
+.footer-links a { color: var(--text-main); font-weight: 500; }
+.footer-links a:hover { color: var(--secondary-color); }
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }

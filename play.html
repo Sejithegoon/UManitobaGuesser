@@ -5,6 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Play | UManitoba Guesser</title>
+    <meta name="description" content="Play UManitoba Guesser: look at a photo of the University of Manitoba campus and drop a pin where you think it was taken. Pick your difficulty and number of rounds.">
+    <meta name="theme-color" content="#0b3b75">
+    <meta property="og:title" content="Play UManitoba Guesser">
+    <meta property="og:description" content="How well do you know the University of Manitoba campus? Guess the location from a photo.">
+    <meta property="og:image" content="https://umanitobaguesser.ca/assets/logo-main.png">
+    <meta property="og:type" content="website">
     <link rel="shortcut icon" href="./assets/logo-main.webp" type="image/x-icon">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="./static/main.css">
@@ -18,49 +24,99 @@
     </script>
 </head>
 <body>
-    <div class="nav">
+    <nav class="nav" id="siteNav">
         <div class="logo">
-            <a href="./index.html"><img src="./assets/logo-main.webp" alt="logo"></a>
+            <a href="./index.html"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
         </div>
-        <div class="links">
-            <ul>
-                <li><a href="./index.html">Home</a></li>
-                <li><a href="./about us.html">About Us</a></li>
-                <li><a class="accountButtons" href="#"><button>Login</button></a></li>
-                <li><button class="theme-toggle" onclick="toggleTheme()"><i id="themeIcon" class="fa-solid fa-moon"></i></button></li>
-            </ul>
+        <div class="nav-right">
+            <div class="links" id="navLinks">
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li><a href="./calendar.html">Class Calendar</a></li>
+                    <li><a href="./about.html">About Us</a></li>
+                </ul>
+            </div>
+            <button class="theme-toggle" id="soundToggle" aria-label="Toggle sound" title="Sound on (click to mute)"><i id="soundIcon" class="fa-solid fa-volume-high"></i></button>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
         </div>
-    </div>
+    </nav>
 
     <div class="main">
         <div class="game-card">
             <h1 id="roundHeader">ROUND 1</h1>
-            <h3 id="timer">00s</h3>
-            
+
+            <div class="timer-wrap" id="timerWrap">
+                <h3 id="timer">--</h3>
+                <div class="timer-track"><div class="timer-bar" id="timerBar"></div></div>
+            </div>
+
             <div class="gameLocation" id="gameLocation">
-                <img src="./locations/location1.png" alt="location">
+                <div class="photo-wrap loading" id="photoWrap">
+                    <img id="locationImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Campus location to guess" draggable="false">
+                    <div class="magnifier-lens" id="magLens" aria-hidden="true"></div>
+                    <div class="photo-tools">
+                        <button type="button" id="magToggle" class="tool-btn" aria-pressed="true" title="Toggle magnifier lens" aria-label="Toggle magnifier lens"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <button type="button" id="expandBtn" class="tool-btn" title="Open full-size photo" aria-label="Open full-size photo"><i class="fa-solid fa-expand"></i></button>
+                    </div>
+                </div>
+                <p class="photo-hint" id="photoHint"></p>
+            </div>
+
+            <div id="photoViewer" class="viewer hidden" role="dialog" aria-modal="true" aria-label="Photo viewer">
+                <div class="viewer-bar">
+                    <button type="button" class="tool-btn" id="vZoomOut" aria-label="Zoom out"><i class="fa-solid fa-minus"></i></button>
+                    <button type="button" class="tool-btn" id="vZoomIn" aria-label="Zoom in"><i class="fa-solid fa-plus"></i></button>
+                    <button type="button" class="tool-btn" id="vReset" aria-label="Reset zoom"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button type="button" class="tool-btn" id="vClose" aria-label="Close viewer"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="viewer-stage" id="viewerStage">
+                    <img id="viewerImg" alt="Enlarged campus location" draggable="false">
+                </div>
             </div>
 
             <div class="map-container">
                 <div id="map"></div>
             </div>
 
+            <div class="round-result hint" id="roundResult" aria-live="polite"></div>
+
             <div class="game-ui">
                 <div class="gameButtons">
-                    <button id="guessButton" class="primary-btn">Guess</button>
+                    <button id="guessButton" class="primary-btn" disabled>Guess</button>
+                    <button id="endButton" class="secondary-btn" style="display:none">End Game</button>
                     <button id="restartButton" class="secondary-btn">Restart</button>
                 </div>
                 <div class="score-badge">
-                    <p id="score">Score: 0 🦬</p> <!-- FIXED TYPO -->
+                    <p id="score">Score: 0 🦬</p>
+                    <p id="bestScore" class="best-score">Best: --</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Rules / info popup -->
     <div id="feedbackModal" class="modal hidden">
         <div class="modalContent">
-            <span id="closeModal">&times;</span>
+            <span id="closeModal" role="button" aria-label="Close">&times;</span>
             <p id="feedbackMessage"></p>
+        </div>
+    </div>
+
+    <!-- End of game results -->
+    <div id="resultsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="resRank">
+        <div class="modalContent results-card">
+            <span id="closeResults" role="button" aria-label="Close results">&times;</span>
+            <h2 id="resRank"></h2>
+            <p id="resNew" class="res-new" hidden>🎉 New personal best!</p>
+            <div class="res-score"><span id="resScore">0</span><small id="resMax"></small></div>
+            <p id="resBest" class="res-best"></p>
+            <ol id="resList" class="res-list"></ol>
+            <div class="res-actions">
+                <button id="shareBtn" class="primary-btn">Share</button>
+                <button id="playAgainBtn" class="secondary-btn">Play again</button>
+            </div>
+            <a class="res-home" href="./index.html">Change difficulty or rounds</a>
         </div>
     </div>
 
@@ -68,24 +124,27 @@
         <div class="footer-container">
             <div class="cord">
                 <h3>Join the Community 🌐</h3>
-                <p>Connect via Discord to get the latest updates on <strong>UofM Campus Guesser</strong>.</p>
+                <p>Connect via Discord to get the latest updates on <strong>UManitoba Guesser</strong>.</p>
                 <div class="cta-row">
                     <div class="discord-cta">
                         <a href="https://discord.gg/s3Sta8cj5B"><button class="discord-btn"><i class='fab fa-discord'></i> Discord</button></a>
                     </div>
                     <div class="instagram-cta">
-                        <a href="https://www.instagram.com/umanitobaguesser/" target="_blank"><button class="instagram-btn"><i class="fa-brands fa-instagram"></i> Instagram</button></a>
+                        <a href="https://www.instagram.com/umanitobaguesser/" target="_blank" rel="noopener"><button class="instagram-btn"><i class="fa-brands fa-instagram"></i> Instagram</button></a>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 UofM Campus Guesser | Built by Bisons for Bisons 🦬</p>
+                <p class="footer-links"><a href="./about.html">About</a><a href="./privacy.html">Privacy</a><a href="mailto:umanitobaguesser@gmail.com">Contact</a></p>
+                <p>&copy; 2026 UManitoba Guesser | Built by Bisons for Bisons 🦬</p>
             </div>
         </div>
     </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./static/sounds.js"></script>
     <script src="./static/game.js"></script>
+    <script src="./static/magnifier.js"></script>
     <script>
         function toggleTheme() {
             document.documentElement.classList.toggle('dark-mode');
@@ -101,5 +160,6 @@
         }
         document.addEventListener('DOMContentLoaded', updateThemeIcon);
     </script>
+    <script src="./static/nav.js"></script>
 </body>
 </html>

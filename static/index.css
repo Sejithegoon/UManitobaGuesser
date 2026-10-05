@@ -96,8 +96,29 @@ h1 {
     box-shadow: var(--shadow-lg);
 }
 
-.accountButtons {
-    display: flex;
-    gap: 15px;
-    margin-top: 10px;
+
+
+.tagline { color: var(--text-muted); font-size: 1.1rem; margin-top: -10px; }
+
+/* How to play */
+.howto { max-width: 900px; margin: 0 auto; padding: 20px 20px 0; text-align: center; }
+.howto h2 { font-size: 2.6rem; color: var(--primary-color); margin-bottom: 24px; }
+.howto-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: left; }
+.howto-step { background: var(--card-bg); border-radius: var(--border-radius); border-top: 4px solid var(--secondary-color); padding: 24px 22px; box-shadow: var(--shadow-sm); }
+.howto-step h3 { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 8px; }
+.howto-step p { color: var(--text-main); line-height: 1.6; font-size: 1rem; }
+.howto-note { margin: 28px auto 0; max-width: 640px; color: var(--text-muted); line-height: 1.6; }
+@media (max-width: 768px) { .howto-grid { grid-template-columns: 1fr; } }
+
+@media (max-width: 600px) {
+    .main { padding: 24px 16px; min-height: 0; }
+    .mainConetent { padding: 36px 20px; gap: 20px; }
+    h1 { font-size: 2.9rem; }
+    .gameOptions h3 { font-size: 1.3rem; margin-bottom: 12px; }
+    .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    #roundSelector { grid-template-columns: repeat(2, 1fr); }
+    .options button { padding: 11px 6px; font-size: 1rem; }
+    .playButton .play { font-size: 2.2rem; padding: 12px 40px; width: 100%; }
+    .howto { padding: 10px 16px 0; }
+    .howto h2 { font-size: 2.2rem; }
 }

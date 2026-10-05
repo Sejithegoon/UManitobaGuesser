@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7269426922041265" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Calendar | UManitoba Guesser</title>
+    <meta name="description" content="Pick your University of Manitoba classes and download one file that adds your whole timetable to Google Calendar, Apple Calendar or Outlook. Free, no login.">
+    <meta name="theme-color" content="#0b3b75">
+    <meta property="og:title" content="UManitoba Class Calendar">
+    <meta property="og:description" content="Add your University of Manitoba classes to your phone or laptop calendar in one click.">
+    <meta property="og:image" content="https://umanitobaguesser.ca/assets/logo-main.png">
+    <meta property="og:url" content="https://umanitobaguesser.ca/calendar.html">
+    <meta property="og:type" content="website">
+    <link rel="shortcut icon" href="./assets/logo-main.webp" type="image/x-icon">
+    <link rel="stylesheet" href="./static/main.css">
+    <link rel="stylesheet" href="./static/calendar.css">
+    <script src="https://kit.fontawesome.com/edb895a006.js" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-7269426922041265">
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</head>
+<body>
+    <nav class="nav" id="siteNav">
+        <div class="logo">
+            <a href="./index.html"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
+        </div>
+        <div class="nav-right">
+            <div class="links" id="navLinks">
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li class="nav-play"><a class="playButton" href="./play.html?diff=easy&rounds=5"><button>Play</button></a></li>
+                    <li><a href="./calendar.html" class="active" aria-current="page">Class Calendar</a></li>
+                    <li><a href="./about.html">About Us</a></li>
+                </ul>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <main class="calMain">
+        <header class="cal-hero">
+            <h1>Class Calendar</h1>
+            <p>UManitoba doesn't let you export your timetable, so we did. Find your classes, check your week, and download one file that adds everything to Google Calendar, Apple Calendar or Outlook.</p>
+        </header>
+
+        <div class="cal-layout">
+            <!-- LEFT: search -->
+            <section class="cal-card cal-search" aria-labelledby="findTitle">
+                <h2 id="findTitle">1. Find your classes</h2>
+
+                <label class="sr-only" for="q">Search classes</label>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input id="q" type="search" placeholder="Course, title, instructor or CRN (e.g. COMP 1010)" autocomplete="off" spellcheck="false">
+                </div>
+
+                <div class="filters">
+                    <div class="seg" id="termSeg" role="group" aria-label="Term">
+                        <button type="button" data-term="all" class="on">All terms</button>
+                        <button type="button" data-term="F">Fall 2026</button>
+                        <button type="button" data-term="W">Winter 2027</button>
+                    </div>
+                    <label class="sr-only" for="dep">Department</label>
+                    <select id="dep"><option value="">All departments</option></select>
+                </div>
+
+                <div class="chips" id="chips">
+                    <span>Try:</span>
+                    <button type="button" data-q="COMP 1010">COMP 1010</button>
+                    <button type="button" data-q="MATH 1500">MATH 1500</button>
+                    <button type="button" data-q="PSYC 1200">PSYC 1200</button>
+                    <button type="button" data-q="STAT 1000">STAT 1000</button>
+                </div>
+
+                <p class="result-count" id="resultCount" aria-live="polite"></p>
+                <div id="results" class="results"><p class="muted">Loading courses…</p></div>
+                <button type="button" id="showMore" class="more-btn" hidden>Show more courses</button>
+            </section>
+
+            <!-- RIGHT: my schedule -->
+            <aside class="cal-card cal-schedule" id="mySchedule" aria-labelledby="mineTitle">
+                <div class="sched-head">
+                    <h2 id="mineTitle">2. Your schedule</h2>
+                    <span class="count-badge" id="countBadge">0</span>
+                </div>
+
+                <p class="muted" id="emptyState">No classes yet. Search on the left and press <strong>Add</strong>.</p>
+                <div id="selList" class="sel-list"></div>
+                <div id="notices" class="notices"></div>
+
+                <div id="weekWrap" hidden>
+                    <div class="seg term-tabs" id="termTabs" role="group" aria-label="Week preview term"></div>
+                    <div class="week-scroll"><div id="week" class="week"></div></div>
+                </div>
+
+                <div class="opts" id="opts" hidden>
+                    <h3>Calendar settings</h3>
+                    <label class="opt-row">
+                        <span>Reminder</span>
+                        <select id="reminder">
+                            <option value="0">None</option>
+                            <option value="10">10 minutes before</option>
+                            <option value="15">15 minutes before</option>
+                            <option value="30">30 minutes before</option>
+                            <option value="60">1 hour before</option>
+                        </select>
+                    </label>
+                    <label class="opt-check">
+                        <input type="checkbox" id="skipBreaks" checked>
+                        <span>Skip UM holidays and term breaks
+                            <small id="breakList"></small>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="sched-actions" id="actions" hidden>
+                    <button type="button" id="downloadBtn" class="dl-btn"><i class="fa-solid fa-calendar-plus"></i> Download calendar (.ics)</button>
+                    <p class="summary" id="summary"></p>
+                    <button type="button" id="clearBtn" class="link-btn">Clear all classes</button>
+                </div>
+            </aside>
+        </div>
+
+        <section class="cal-card cal-help" aria-labelledby="helpTitle">
+            <h2 id="helpTitle">3. Add the file to your calendar</h2>
+            <div class="help-grid">
+                <details>
+                    <summary>iPhone or iPad</summary>
+                    <p>Open the downloaded file (Safari shows it in Downloads, or in the Files app) and tap <strong>Add All</strong>. Choose which calendar to put the classes in.</p>
+                </details>
+                <details>
+                    <summary>Google Calendar</summary>
+                    <p>On a computer, go to calendar.google.com, click the gear, then <strong>Settings → Import &amp; export → Import</strong>. Pick the file and the calendar. The Google Calendar app on phones will show them too.</p>
+                </details>
+                <details>
+                    <summary>Apple Calendar (Mac)</summary>
+                    <p>Double-click the file and choose a calendar. Or use <strong>File → Import</strong>.</p>
+                </details>
+                <details>
+                    <summary>Outlook</summary>
+                    <p>In Outlook on the web, go to <strong>Calendar → Add calendar → Upload from file</strong>. In the desktop app use <strong>File → Open &amp; Export → Import/Export</strong>.</p>
+                </details>
+            </div>
+            <h3>Good to know</h3>
+            <ul class="notes">
+                <li>This is an unofficial tool built from UM's public class schedule. Always confirm your timetable in Aurora.</li>
+                <li>Room locations aren't in the public schedule, so events don't have one.</li>
+                <li>Classes with no set meeting time (like online or flexible courses) are listed but can't be added to a calendar.</li>
+                <li>Some programs, like Medicine, Pharmacy, Occupational Therapy and Physical Therapy, have different term breaks. Turn off "Skip UM holidays" and delete those days yourself if that's you.</li>
+                <li>Downloading the file again after changing classes won't create duplicates in most calendar apps, because every event has a fixed ID.</li>
+                <li>Your selected classes are saved only in your browser. Nothing is sent to a server.</li>
+            </ul>
+        </section>
+    </main>
+
+    <button type="button" class="mobile-bar" id="mobileBar" hidden>
+        <i class="fa-solid fa-calendar-days"></i> <span id="mobileBarText">My schedule</span>
+    </button>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-bottom" style="margin-top:0;border-top:none;padding-top:0">
+                <p class="footer-links"><a href="./about.html">About</a><a href="./privacy.html">Privacy</a><a href="mailto:umanitobaguesser@gmail.com">Contact</a></p>
+                <p>&copy; 2026 UManitoba Guesser | Built by Bisons for Bisons 🦬</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./static/calendarCore.js"></script>
+    <script src="./static/calendar.js"></script>
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+        }
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = document.documentElement.classList.contains('dark-mode') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateThemeIcon);
+    </script>
+    <script src="./static/nav.js"></script>
+</body>
+</html>
