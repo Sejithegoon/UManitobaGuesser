@@ -367,11 +367,11 @@
 .round-result.hint { color: var(--text-muted); border-left-color: rgba(128, 128, 128, 0.35); }
 .round-result .rr-title { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; letter-spacing: 1px; }
 .round-result .rr-pts { font-family: "Bebas Neue", sans-serif; font-size: 1.6rem; letter-spacing: 1px; color: var(--secondary-color); }
-.round-result.perfect { border-left-color: #2fb344; }
-.round-result.win { border-left-color: #6cc24a; }
-.round-result.ok { border-left-color: var(--secondary-color); }
-.round-result.far { border-left-color: #f76707; }
-.round-result.timeout { border-left-color: #e5484d; }
+.round-result.rr-perfect { border-left-color: #2fb344; }
+.round-result.rr-win { border-left-color: #6cc24a; }
+.round-result.rr-ok { border-left-color: var(--secondary-color); }
+.round-result.rr-far { border-left-color: #f76707; }
+.round-result.rr-timeout { border-left-color: #e5484d; }
 .round-result:not(.hint) { animation: bannerIn 0.3s ease; }
 @keyframes bannerIn { from { transform: translateY(6px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 

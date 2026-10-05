@@ -134,7 +134,7 @@ function setHint(text) {
 }
 
 function showBanner({ kind, title, detail, points }) {
-    roundResult.className = `round-result ${kind}`;
+    roundResult.className = `round-result rr-${kind}`;   // "rr-" prefix: a bare "far" class clashes with Font Awesome
     roundResult.innerHTML =
         `<span class="rr-title">${title}</span>` +
         `<span class="rr-detail">${detail}</span>` +
