@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7269426922041265" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Play | UManitoba Guesser</title>
+    <meta name="description" content="The full guide to UManitoba Guesser: how a round works, difficulty timers, how scoring by distance works, ranks, controls, and tips for finding University of Manitoba campus locations.">
+    <meta name="theme-color" content="#0b3b75">
+    <meta property="og:title" content="How to Play UManitoba Guesser">
+    <meta property="og:description" content="Rules, scoring and tips for the University of Manitoba campus guessing game.">
+    <meta property="og:image" content="https://umanitobaguesser.ca/assets/logo-main.png">
+    <meta property="og:url" content="https://umanitobaguesser.ca/how-to-play.html">
+    <meta property="og:type" content="article">
+    <link rel="shortcut icon" href="./assets/logo-main.webp" type="image/x-icon">
+    <link rel="stylesheet" href="./static/main.css">
+    <link rel="stylesheet" href="./static/legal.css">
+    <script src="https://kit.fontawesome.com/edb895a006.js" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-7269426922041265">
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</head>
+<body>
+    <nav class="nav" id="siteNav">
+        <div class="logo">
+            <a href="./index.html"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
+        </div>
+        <div class="nav-right">
+            <div class="links" id="navLinks">
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li class="nav-play"><a class="playButton" href="./play.html?diff=easy&rounds=5"><button>Play</button></a></li>
+                    <li><a href="./calendar.html">Class Calendar</a></li>
+                    <li><a href="./about.html">About Us</a></li>
+                </ul>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <main class="legalMain">
+        <article class="legal-card">
+            <h1>How to Play</h1>
+            <p class="updated">The complete guide to UManitoba Guesser</p>
+
+            <p>UManitoba Guesser is a free photo-guessing game about the University of Manitoba. Each round shows you a real photo taken somewhere on campus, and your job is to find that spot on a map. The closer your guess, the more points you score. It's a quick way to learn the campus if you're new, and a real test if you've spent years walking between buildings.</p>
+
+            <h2>The goal</h2>
+            <p>Score as many points as you can by placing your pin as close as possible to where each photo was taken. A perfect game of 5 rounds is worth 25,000 points.</p>
+
+            <h2>Where the photos are from</h2>
+            <p>Every location in the game is on the University of Manitoba's <strong>Fort Garry campus</strong> in south Winnipeg. Photos come from inside and around buildings across campus, including University Centre, the Allen, Armes, Isbister and Parker buildings, the Duff Roblin Building, Drake Centre, Pembina Hall, Taché Hall, University College, St. John's College and St. Paul's College, the Education and Engineering buildings, and the athletic facilities. Some photos show famous landmarks; others show a hallway, a staircase or a doorway you've probably walked past without noticing.</p>
+            <p>New locations are added regularly, so the game changes as you play it more.</p>
+
+            <h2>How a round works</h2>
+            <ol>
+                <li><strong>Study the photo.</strong> Look for clues: signs, room numbers, building materials, windows, the shape of a hallway, or what you can see outside.</li>
+                <li><strong>Drop your pin.</strong> Click or tap the map where you think the photo was taken. You can move your pin as many times as you like.</li>
+                <li><strong>Guess.</strong> Press <em>Guess</em> (or the Enter key) to lock in your answer before the timer runs out.</li>
+                <li><strong>See the result.</strong> The map shows the real location, a line to your guess, how far off you were, and the points you earned.</li>
+                <li><strong>Next round.</strong> Press <em>Next Round</em> to keep going. After the last round you'll see your final score and rank.</li>
+            </ol>
+            <p>If the timer runs out before you guess, the round scores 0 points.</p>
+
+            <h2>Difficulty and rounds</h2>
+            <p>Pick a difficulty and a number of rounds on the home page before you start. Difficulty only changes how much time you get per round:</p>
+            <ul>
+                <li><strong>Easy:</strong> 30 seconds per round</li>
+                <li><strong>Medium:</strong> 20 seconds per round</li>
+                <li><strong>Hard:</strong> 8 seconds per round</li>
+            </ul>
+            <p>You can play 5, 10 or 20 rounds, or choose <strong>Unlimited</strong> and keep going until you press <em>End Game</em>. Each combination of difficulty and rounds keeps its own personal best score on your device.</p>
+
+            <h2>Scoring</h2>
+            <p>Each round is worth up to 5,000 points. Any guess within 10 metres of the real spot gets the full 5,000. After that, points drop smoothly the further away you are, so being close matters much more than being roughly right:</p>
+            <ul>
+                <li>30 m away: about 4,500 points</li>
+                <li>100 m away: about 3,200 points</li>
+                <li>200 m away: about 1,900 points</li>
+                <li>400 m away: about 700 points</li>
+                <li>1 km or more away: almost nothing</li>
+            </ul>
+            <p>After each guess you'll see a quick rating: <strong>Bullseye</strong> (under 30 m), <strong>Great guess</strong> (under 200 m), <strong>Not bad</strong> (under 600 m) or <strong>Way off</strong>.</p>
+
+            <h2>Ranks</h2>
+            <p>At the end of a game you get a rank based on the share of possible points you earned:</p>
+            <ul>
+                <li><strong>Campus Legend:</strong> 90% or more</li>
+                <li><strong>Seasoned Senior:</strong> 70% or more</li>
+                <li><strong>Dean's List:</strong> 45% or more</li>
+                <li><strong>First-Year Fresh:</strong> 20% or more</li>
+                <li><strong>Lost in the Tunnels:</strong> under 20%</li>
+            </ul>
+            <p>You can share your result with friends as a row of coloured squares, one per round, without giving away the locations.</p>
+
+            <h2>Controls</h2>
+            <ul>
+                <li><strong>Place a pin:</strong> click or tap the map.</li>
+                <li><strong>Move around the map:</strong> drag to pan; scroll, pinch or use the + and − buttons to zoom.</li>
+                <li><strong>Zoom into the photo:</strong> on a computer, hover over the photo to use the magnifier. On any device, open the full-size viewer to zoom with the scroll wheel or a pinch, drag to look around, and double-tap to zoom in. On phones, tapping the photo opens the viewer.</li>
+                <li><strong>Keyboard:</strong> Enter guesses, moves to the next round and closes the rules. In the photo viewer, + and − zoom and Escape closes it.</li>
+                <li><strong>Sound:</strong> use the speaker button in the top bar to mute or unmute.</li>
+            </ul>
+
+            <h2>Tips for a better score</h2>
+            <ul>
+                <li><strong>Read every sign.</strong> Room numbers, department names and plaques often give the building away.</li>
+                <li><strong>Look at the materials.</strong> Older buildings and newer ones look very different: brick and stone versus glass and concrete.</li>
+                <li><strong>Use the windows.</strong> If you can see outside, look for nearby buildings, parking lots or green space.</li>
+                <li><strong>Think about the tunnels.</strong> Many Fort Garry buildings are linked by tunnels and walkways. A hallway photo might be at the edge of a building, close to a connection.</li>
+                <li><strong>Zoom the map in before you guess.</strong> Being off by one building can cost hundreds of points, so place your pin on the exact wing or entrance.</li>
+                <li><strong>Start on Easy.</strong> The extra time lets you learn the campus. Switch to Hard once you recognize places quickly.</li>
+            </ul>
+
+            <h2>Frequently asked questions</h2>
+            <h3>Is it free?</h3>
+            <p>Yes. There's no account, no sign-up and nothing to buy. Ads help cover the cost of running the site.</p>
+            <h3>Do I need to be a U of M student?</h3>
+            <p>No. Anyone can play, but people who know the Fort Garry campus will have an advantage.</p>
+            <h3>Does my score get saved?</h3>
+            <p>Your personal best for each mode is saved in your own browser. There's no public leaderboard, and nothing is sent to a server.</p>
+            <h3>I found a photo in the wrong place. How do I report it?</h3>
+            <p>Email <a href="mailto:umanitobaguesser@gmail.com">umanitobaguesser@gmail.com</a> or message us on Discord with the location and what looks wrong.</p>
+
+            <p style="margin-top:28px"><a class="home-btn" href="./play.html?diff=easy&rounds=5">Start playing</a></p>
+        </article>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-bottom" style="margin-top:0;border-top:none;padding-top:0">
+                <nav class="footer-links" aria-label="Site pages"><a href="./index.html">Home</a><a href="./how-to-play.html">How to Play</a><a href="./calendar.html">Class Calendar</a><a href="./about.html">About &amp; FAQ</a><a href="./privacy.html">Privacy Policy</a><a href="mailto:umanitobaguesser@gmail.com">Contact</a></nav>
+                <p>&copy; 2026 UManitoba Guesser | Built by Bisons for Bisons 🦬</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+        }
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = document.documentElement.classList.contains('dark-mode') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateThemeIcon);
+    </script>
+    <script src="./static/nav.js"></script>
+</body>
+</html>

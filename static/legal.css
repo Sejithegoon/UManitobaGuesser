@@ -6,6 +6,8 @@
 .legal-card h2 { color: var(--primary-color); font-size: 1.8rem; margin: 28px 0 8px; }
 .legal-card p, .legal-card li { line-height: 1.7; font-size: 1.05rem; margin-bottom: 10px; }
 .legal-card ul { padding-left: 22px; list-style: disc; }
+.legal-card ol { padding-left: 22px; list-style: decimal; }
+.legal-card h3 { color: var(--text-main); font-family: 'Fira Sans', sans-serif; font-weight: 600; font-size: 1.1rem; letter-spacing: 0; margin: 18px 0 4px; }
 .legal-card a { color: var(--primary-color); text-decoration: underline; }
 .legal-card a:hover { color: var(--secondary-color); }
 .legal-card.center { text-align: center; }

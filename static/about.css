@@ -104,6 +104,15 @@
     transform: translateY(-2px);
 }
 
+/* Long-form text (story, campus, FAQ) */
+.about-text { text-align: left; max-width: 720px; margin: 0 auto 60px; }
+.about-text h2 { color: var(--primary-color); font-size: 2.2rem; margin: 36px 0 10px; }
+.about-text h2:first-child { margin-top: 0; }
+.about-text h3 { font-family: 'Fira Sans', sans-serif; font-weight: 600; font-size: 1.1rem; letter-spacing: 0; color: var(--text-main); margin: 20px 0 4px; }
+.about-card .about-text p { font-size: 1.05rem; line-height: 1.7; margin: 0 0 14px; max-width: none; }
+.about-text a { color: var(--primary-color); text-decoration: underline; }
+html.dark-mode .about-text a { color: var(--secondary-color); }
+
 @media (max-width: 768px) {
     .about-grid {
         grid-template-columns: 1fr;
