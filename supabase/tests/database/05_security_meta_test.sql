@@ -29,7 +29,7 @@ select is(
   (select coalesce(string_agg(p.proname, ', '), '')
      from pg_proc p join pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'EXECUTE')
-      and p.proname not in ('leaderboard', 'username_available')),  -- read-only, public by design
+      and p.proname not in ('leaderboard', 'username_available', 'site_stats')),  -- read-only, public by design
   '', 'no privileged public function is callable without a session (except the public read-only ones)');
 
 select is(

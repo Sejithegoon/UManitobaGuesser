@@ -72,6 +72,26 @@
         $('umBadge').hidden = !profile.is_um_verified;
         $('umPanel').hidden = !!profile.is_um_verified;
         renderBests();
+        renderGames();
+    }
+
+    function modeLabel(g) {
+        const d = g.difficulty[0].toUpperCase() + g.difficulty.slice(1);
+        return `${d} · ${g.rounds_planned ? g.rounds_planned + ' rds' : 'Unlimited'}`;
+    }
+    function gameRow(g, i, showRank) {
+        const max = (g.rounds_planned || g.rounds_completed) * 5000;
+        const when = new Date(g.finished_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        return `<li>${showRank ? `<span class="g-rank">${['🥇', '🥈', '🥉'][i] || (i + 1) + '.'}</span>` : ''}` +
+            `<span class="g-main"><strong>${Number(g.total_score).toLocaleString()}</strong><span class="muted"> / ${max.toLocaleString()}</span>` +
+            `${g.is_ranked ? ' <span class="badge sm">Ranked</span>' : ''}<br><span class="muted">${modeLabel(g)} · ${when}</span></span></li>`;
+    }
+    async function renderGames() {
+        try {
+            const [recent, top] = await Promise.all([api.auth.recentGames(), api.auth.topGames()]);
+            if (recent.length) $('recent').innerHTML = '<ol class="game-list">' + recent.map((g, i) => gameRow(g, i, false)).join('') + '</ol>';
+            if (top.length) $('top').innerHTML = '<ol class="game-list">' + top.map((g, i) => gameRow(g, i, true)).join('') + '</ol>';
+        } catch (e) { /* history is optional */ }
     }
 
     async function renderBests() {

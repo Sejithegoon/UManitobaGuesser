@@ -52,6 +52,7 @@
             </div>
             <h1>UManitoba Guesser</h1>
             <p class="tagline">How well do you know the Fort Garry campus?</p>
+            <p class="live-strip" data-live hidden><span class="live-dot" aria-hidden="true"></span><span data-online></span> · <span data-registered></span></p>
 
             <div class="gameOptions">
                 <h3>Select Difficulty</h3>
@@ -167,6 +168,9 @@
         }
         document.addEventListener('DOMContentLoaded', updateThemeIcon);
     </script>
+    <script src="./static/config.js"></script>
+    <script src="./static/api.js"></script>
+    <script src="./static/presence.js"></script>
     <script src="./static/nav.js"></script>
 </body>
 </html>

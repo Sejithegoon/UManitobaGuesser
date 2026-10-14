@@ -182,6 +182,19 @@
         },
         async usernameAvailable(username) { return rpc('username_available', { p_username: username }, await baseClient()); },
         async myBests() { return rpc('my_bests', {}, await baseClient()); },
+        // Own finished games only (row-level security limits this to the signed-in player)
+        async myGames(order, limit) {
+            const c = await baseClient();
+            const { data, error } = await c.from('games')
+                .select('difficulty, rounds_planned, total_score, rounds_completed, is_ranked, finished_at')
+                .eq('status', 'finished')
+                .order(order, { ascending: false })
+                .limit(limit);
+            if (error) throw error;
+            return data || [];
+        },
+        recentGames() { return this.myGames('finished_at', 5); },
+        topGames() { return this.myGames('total_score', 5); },
         umStart: (email) => callFunction('um-verify', { action: 'start', email }),
         umConfirm: (code) => callFunction('um-verify', { action: 'confirm', code }),
         async deleteAccount() {
@@ -204,6 +217,22 @@
         finish: (gameId) => rpc('game_finish', { p_game_id: gameId }),
         leaderboard: async (difficulty, rounds, period) =>
             rpc('leaderboard', { p_difficulty: difficulty, p_rounds: rounds, p_period: period }, await baseClient()),
+        siteStats: async () => rpc('site_stats', {}, await baseClient()),
+        // Live "players online": Supabase Realtime presence. Anonymous (no names);
+        // each open tab counts once. Calls onCount(n) whenever it changes.
+        async watchOnline(onCount, playing) {
+            const c = await baseClient();
+            const key = (crypto.randomUUID && crypto.randomUUID()) || String(Math.random()).slice(2);
+            const ch = c.channel('umg-online', { config: { presence: { key } } });
+            const count = () => {
+                const st = ch.presenceState();
+                const all = Object.values(st).map(v => v[0] || {});
+                onCount({ online: all.length, playing: all.filter(x => x.playing).length });
+            };
+            ch.on('presence', { event: 'sync' }, count)
+              .subscribe(status => { if (status === 'SUBSCRIBED') ch.track({ playing: !!playing }); });
+            return ch;
+        },
         auth
     };
 })();

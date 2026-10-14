@@ -22,7 +22,7 @@
         }
     </script>
 </head>
-<body>
+<body data-page="play">
     <nav class="nav" id="siteNav">
         <div class="logo">
             <a href="./"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
@@ -98,6 +98,7 @@
 
         <!-- Wide screens only: live leaderboard for the mode being played -->
         <aside class="side-board" id="sideBoard" aria-labelledby="sbTitle" hidden>
+            <p class="live-strip" data-live hidden><span class="live-dot" aria-hidden="true"></span><span data-playing></span> · <span data-online></span></p>
             <h2 id="sbTitle">Leaderboard</h2>
             <p class="sb-mode" id="sbMode"></p>
             <ol class="sb-list" id="sbList"></ol>
@@ -159,6 +160,7 @@
     <script src="./static/game.js"></script>
     <script src="./static/magnifier.js"></script>
     <script src="./static/sideboard.js"></script>
+    <script src="./static/presence.js"></script>
     <script>
         function toggleTheme() {
             document.documentElement.classList.toggle('dark-mode');
