@@ -1,6 +1,14 @@
 # Phase 3: server-run game
 
-Status: **built and tested offline. Not yet applied to Supabase. Switched off on the live site.**
+Status: **applied to Supabase `notsgakxgnkgcrlvnduw` and tested end to end (2026-10-15). Still switched off on the live site (`serverGame: false`).**
+
+Live results, from a local browser with `?server=1` against the real project:
+- Full 5-round guest game: the screen total (12,875) equals the database total. The game is `finished` and unranked, and the guest can't read `locations` (`42501`).
+- A triple-click on Next only advances one round. A client timeout scores 0 and reveals the answer.
+- Timing: a 12 s photo load gives 25.9 s remaining (30 s − 4 s beyond the allowance). A guess arriving at 11 s on Hard is a timeout. A guess at 8.5 s on Hard is accepted (grace).
+- Fallback: with guest sign-ins blocked, the page switches to the classic game.
+
+Auth settings this needs: "Allow new users to sign up" **on** (Supabase counts guests as sign-ups), anonymous sign-ins **on**, Email provider **off** until Phase 4.
 
 ## What changed
 
@@ -30,7 +38,7 @@ If the guest sign-in or `game_start` fails, the page falls back to the classic g
 
 1. `npx supabase@latest db push --dry-run`, then `npx supabase@latest db push`. Applies the engine migration.
 2. **SQL Editor**: run `supabase/seed/photo_keys.local.sql`. It points each location at its photo copy and ends by verifying all 86.
-3. **Authentication → Sign In / Providers → allow anonymous sign-ins.**
+3. **Authentication → Sign In / Providers**: allow new sign-ups **and** anonymous sign-ins, and turn the Email provider **off**.
    - Supabase limits these to 30 per hour per IP.
    - Until CAPTCHA is added, anyone with the public key can open guest sessions and play unranked server games. This can be switched off again after testing.
 4. Then run a browser test locally with `?server=1`.
