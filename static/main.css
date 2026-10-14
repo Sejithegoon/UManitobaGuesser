@@ -353,6 +353,7 @@ a.home-btn:active {
 
 /* Neutral (outlined) */
 .neutral-btn,
+a.neutral-btn,
 .options button,
 .more-btn {
     --btn-bg: var(--card-bg);

@@ -29,9 +29,9 @@
 .legal-card ol { padding-left: 22px; list-style: decimal; }
 .legal-card li::marker { color: var(--secondary-shade); font-weight: 700; }
 html.dark-mode .legal-card li::marker { color: var(--secondary-color); }
-.legal-card a:not(.home-btn):not(.play-now) { color: var(--heading); text-decoration: underline; text-underline-offset: 3px; }
-.legal-card a:not(.home-btn):not(.play-now):hover { color: var(--secondary-shade); }
-html.dark-mode .legal-card a:not(.home-btn):not(.play-now):hover { color: var(--secondary-color); }
+.legal-card a:not([class*="btn"]):not(.play-now) { color: var(--heading); text-decoration: underline; text-underline-offset: 3px; }
+.legal-card a:not([class*="btn"]):not(.play-now):hover { color: var(--secondary-shade); }
+html.dark-mode .legal-card a:not([class*="btn"]):not(.play-now):hover { color: var(--secondary-color); }
 .legal-card.center { text-align: center; }
 .legal-card.center h2 { justify-content: center; }
 .legal-card .big { font-family: "Bebas Neue", sans-serif; font-size: 7rem; line-height: 1; color: var(--secondary-color); text-shadow: 0 5px 0 var(--secondary-shade); animation: cheer 0.8s var(--ease-pop) 0.2s both; }
