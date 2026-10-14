@@ -1,6 +1,6 @@
 # Schema and access control (Phase 2)
 
-Status: **migrations written and tested offline (PGlite, Postgres 18.6). Not yet applied to any Supabase project.**
+Status: **applied to Supabase project `notsgakxgnkgcrlvnduw` (ca-central-1) on 2026-10-14 via `supabase db push`. Offline tests: 77/77 (PGlite). Live checks with the publishable key: 11/11 (visitor reads of answers/games/private columns and all visitor writes denied; public profile fields readable). Signed-in and guest rules are not yet tested live (sign-ups are off). Locations not yet imported.**
 
 Migrations, applied in order:
 
