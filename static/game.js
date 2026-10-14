@@ -487,7 +487,11 @@ function finishGame() {
     stopTimer();
     finished = true;
     // Server records the result (ranked/abandoned); the screen already has every round
-    if (serverMode && serverGame) window.UMGApi.finish(serverGame.id).catch(err => console.error(err));
+    if (serverMode && serverGame) {
+        window.UMGApi.finish(serverGame.id)
+            .then(() => document.dispatchEvent(new Event('umg:gamefinished')))   // lets the sidebar refresh
+            .catch(err => console.error(err));
+    }
     endBtn.style.display = 'none';
     guessBtn.style.display = '';
     guessBtn.disabled = false;

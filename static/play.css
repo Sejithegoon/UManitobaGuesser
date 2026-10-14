@@ -446,3 +446,35 @@
 }
 .captcha-box[hidden] { display: none; }
 .captcha-box p { font-weight: 600; margin-bottom: 10px; }
+
+/* ---------- Leaderboard sidebar (wide screens only) ---------- */
+.side-board { display: none; }
+@media (min-width: 1280px) {
+    .main { gap: 24px; }
+    .side-board:not([hidden]) {
+        display: block;
+        flex: 0 0 300px;
+        position: sticky;
+        top: 94px;
+        padding: 22px 20px 20px;
+        background: var(--card-bg);
+        border: 2px solid var(--line);
+        border-top: 6px solid var(--secondary-color);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--card-shadow);
+        animation: fadeIn 0.4s ease both;
+    }
+}
+.side-board h2 { font-size: 1.9rem; color: var(--heading); line-height: 1; }
+.sb-mode { color: var(--text-muted); font-size: 0.85rem; margin: 4px 0 12px; }
+.sb-list { list-style: none; margin: 0 0 12px; padding: 0; }
+.sb-list li { display: grid; grid-template-columns: 34px 1fr auto; gap: 8px; align-items: center; padding: 8px 6px; border-bottom: 1px solid var(--line); font-size: 0.95rem; }
+.sb-list li:last-child { border-bottom: none; }
+.sb-list li.me { background: rgba(230, 161, 11, 0.14); border-radius: 8px; }
+.sb-rank { font-weight: 700; text-align: center; }
+.sb-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-score { font-weight: 700; color: var(--heading); }
+.sb-list li.sb-empty { display: block; color: var(--text-muted); text-align: center; padding: 16px 8px; line-height: 1.5; border: 2px dashed var(--line-strong); border-radius: var(--border-radius); }
+.sb-note { color: var(--text-muted); font-size: 0.82rem; margin-bottom: 10px; }
+.sb-note:empty { display: none; }
+.sb-more { width: 100%; }
