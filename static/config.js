@@ -8,5 +8,9 @@ window.UMG_CONFIG = {
     serverGame: false,
 
     supabaseUrl: 'https://notsgakxgnkgcrlvnduw.supabase.co',
-    supabaseKey: 'sb_publishable_A9huMQ7O27LZTi-GiXtFzg_-fVqO1H7'
+    supabaseKey: 'sb_publishable_A9huMQ7O27LZTi-GiXtFzg_-fVqO1H7',
+
+    // Cloudflare Turnstile SITE key (public). The SECRET key goes only in
+    // Supabase: Authentication > Bot and Abuse Protection. Empty = no bot check.
+    turnstileSiteKey: ''
 };
