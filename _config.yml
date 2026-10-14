@@ -1,0 +1,6 @@
+# GitHub Pages (Jekyll) build settings.
+# Keep backend code, tests and docs in the repository but off the website.
+exclude:
+  - supabase
+  - docs
+  - .env.example

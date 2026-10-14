@@ -427,3 +427,22 @@
 @media (prefers-reduced-motion: reduce) {
     .timer-bar, .pin-marker img, .round-result, .photo-wrap.loading::after, .viewer, .magnifier-lens { animation: none; transition: none; }
 }
+
+/* ---------- Bot check (Cloudflare Turnstile; only shown if a click is needed) ---------- */
+.captcha-box {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2100;
+    padding: 18px 20px 14px;
+    background: var(--card-bg);
+    border: 2px solid var(--line);
+    border-top: 6px solid var(--secondary-color);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.18), var(--shadow-lg);
+    text-align: center;
+    max-width: calc(100vw - 32px);
+}
+.captcha-box[hidden] { display: none; }
+.captcha-box p { font-weight: 600; margin-bottom: 10px; }

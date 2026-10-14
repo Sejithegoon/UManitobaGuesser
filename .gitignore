@@ -1,3 +1,15 @@
 # Local only, not part of the website
 tools/
 .claude/
+
+# Secrets and local environment (only .env.example is committed)
+.env
+.env.*
+!.env.example
+
+# Supabase local state and generated data (the location seed contains answer coordinates)
+supabase/.temp/
+supabase/.branches/
+supabase/seed/*.local.sql
+supabase/tests/.harness/
+supabase/seed/*.local.json

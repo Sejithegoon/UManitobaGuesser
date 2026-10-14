@@ -86,6 +86,11 @@ let imageReady = false;    // true once the current photo has loaded
 let finished = false;
 let displayedScore = 0;
 
+// Server-run game (static/api.js). Off = classic in-browser game.
+let serverMode = !!(window.UMGApi && window.UMGApi.enabled);
+let serverGame = null;     // { id, round: { round_no, photo, time_limit_s } }
+let busy = false;          // a server request is in flight: ignore Guess/Next/Enter
+
 // ---------- Helpers ----------
 function sfx(name, delay = 0) {
     if (!window.GameSounds) return;
@@ -162,8 +167,17 @@ function hideFeedback() {
     modal.classList.add('hidden');
     if (!gameStarted) {
         gameStarted = true;
-        tryStartTimer();
+        // Server mode: round 1 is only issued now, so reading the rules never uses round time
+        if (serverMode && !serverGame) loadGameData(setupRound);
+        else tryStartTimer();
     }
+}
+
+function onServerError(err) {
+    console.error(err);
+    busy = false;
+    stopTimer();
+    showFeedback("⚠️ Lost connection to the game server.\nPress Restart to start a new game.");
 }
 
 $('closeModal').addEventListener('click', hideFeedback);
@@ -209,8 +223,9 @@ function resetTimerDisplay() {
     timerBar.style.transition = '';
 }
 
-function startTimer() {
+function startTimer(seconds) {
     resetTimerDisplay();
+    if (seconds !== undefined) { timeLeft = Math.max(0, Math.min(totalTime(), seconds)); renderTimer(); }
     timerRunning = true;
     timerInterval = setInterval(() => {
         timeLeft--;
@@ -225,19 +240,36 @@ function startTimer() {
 
 // Timer only starts once the rules are closed AND the photo has loaded
 function tryStartTimer() {
-    if (gameStarted && imageReady && !gameState.isGuessed && !timerRunning && !finished) startTimer();
+    if (!(gameStarted && imageReady && !gameState.isGuessed && !timerRunning && !finished)) return;
+    if (!serverMode) { startTimer(); return; }
+    // Server mode: tell the server the photo is showing; it sets the real deadline
+    if (busy) return;
+    busy = true;
+    window.UMGApi.startRound(serverGame.id)
+        .then(r => { busy = false; startTimer(Math.ceil(r.remaining_ms / 1000)); })
+        .catch(onServerError);
 }
 
 function handleTimeOut() {
     if (gameState.isGuessed) return;
     gameState.isGuessed = true;
-    const target = currentTarget();
+    if (serverMode) {
+        busy = true;
+        window.UMGApi.submit(serverGame.id, null, null)
+            .then(res => { busy = false; showTimeout(L.latLng(res.answer.lat, res.answer.lng), "⏰ Time's up!"); })
+            .catch(onServerError);
+        return;
+    }
+    showTimeout(currentTarget(), "⏰ Time's up!");
+}
+
+function showTimeout(target, title, detail = 'No points this round.') {
     results.push({ round: gameState.currentRound, distance: null, score: 0 });
 
     targetMarker = L.marker(target, { icon: pin1 }).addTo(map);
     map.flyTo(target, 18, { duration: 0.8 });
 
-    showBanner({ kind: 'timeout', title: "⏰ Time's up!", detail: 'No points this round.', points: 0 });
+    showBanner({ kind: 'timeout', title, detail, points: 0 });
     sfx('timeout');
     setGuessState('next');
 }
@@ -257,7 +289,7 @@ function setGuessState(state) {
 }
 
 function setupRound() {
-    const data = gamePool[gameState.currentRound - 1];
+    const data = serverMode ? serverGame && serverGame.round : gamePool[gameState.currentRound - 1];
     if (!data) return;
 
     stopTimer();
@@ -285,12 +317,12 @@ function setupRound() {
         setHint('⚠️ This photo failed to load. Try refreshing the page.');
         onReady();
     };
-    const src = imgPath(data.name);
+    const src = serverMode ? `./${data.photo}` : imgPath(data.name);
     photoImg.src = src;
     if (photoImg.complete && photoImg.naturalWidth > 0) onReady();
 
-    // Warm the cache for the next round
-    const next = gamePool[gameState.currentRound];
+    // Warm the cache for the next round (classic only: the server issues one photo at a time)
+    const next = !serverMode && gamePool[gameState.currentRound];
     if (next) new Image().src = imgPath(next.name);
 }
 
@@ -313,10 +345,33 @@ function submitGuess() {
     timerWrap.classList.remove('low');
     gameState.isGuessed = true;
 
+    if (serverMode) {
+        busy = true;
+        setGuessState('disabled');
+        const g = gameState.userGuess;
+        window.UMGApi.submit(serverGame.id, g.lat, g.lng)
+            .then(res => {
+                busy = false;
+                const target = L.latLng(res.answer.lat, res.answer.lng);
+                if (res.timed_out) {
+                    showTimeout(target, '⏰ Too late!', 'Your guess reached the server after time ran out.');
+                    return;
+                }
+                gameState.totalScore = res.total_score;
+                showGuessResult(target, res.distance_m, res.score);
+            })
+            .catch(onServerError);
+        return;
+    }
+
     const target = currentTarget();
     const distance = map.distance(gameState.userGuess, target);
     const score = calcScore(distance);
     gameState.totalScore += score;
+    showGuessResult(target, distance, score);
+}
+
+function showGuessResult(target, distance, score) {
     results.push({ round: gameState.currentRound, distance, score });
     animateScore(gameState.totalScore);
 
@@ -336,6 +391,21 @@ function advance() {
         finishGame();
         return;
     }
+    if (serverMode) {
+        busy = true;
+        setGuessState('disabled');
+        window.UMGApi.nextRound(serverGame.id)
+            .then(round => {
+                busy = false;
+                serverGame.round = round;
+                gameState.currentRound = round.round_no;
+                sfx('next');
+                setupRound();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            })
+            .catch(onServerError);
+        return;
+    }
     gameState.currentRound++;
     sfx('next');
     setupRound();
@@ -343,6 +413,7 @@ function advance() {
 }
 
 guessBtn.addEventListener('click', () => {
+    if (busy) return;
     if (finished) { openResults(); return; }
     if (gameState.isGuessed) { advance(); return; }
     if (!gameState.userGuess) return;
@@ -415,6 +486,8 @@ function closeResults() { resultsModal.classList.add('hidden'); }
 function finishGame() {
     stopTimer();
     finished = true;
+    // Server records the result (ranked/abandoned); the screen already has every round
+    if (serverMode && serverGame) window.UMGApi.finish(serverGame.id).catch(err => console.error(err));
     endBtn.style.display = 'none';
     guessBtn.style.display = '';
     guessBtn.disabled = false;
@@ -458,6 +531,27 @@ endBtn.addEventListener('click', () => {
 
 // ---------- Data / init / restart ----------
 function loadGameData(onComplete) {
+    if (serverMode) {
+        busy = true;
+        const rounds = isUnlimited ? null : (parseInt(selectedRounds, 10) || 5);
+        window.UMGApi.startGame(difficulty, rounds)
+            .then(g => {
+                busy = false;
+                serverGame = { id: g.game_id, round: g.round };
+                gameState.currentRound = g.round.round_no;
+                gameState.maxRounds = g.rounds_planned || g.pool_size;
+                onComplete();
+            })
+            .catch(err => {
+                // Server unavailable: fall back to the classic game so nobody is blocked
+                busy = false;
+                console.warn('Server game unavailable, using classic mode:', err);
+                serverMode = false;
+                serverGame = null;
+                loadGameData(onComplete);
+            });
+        return;
+    }
     fetch('./locations/locations.json')
         .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
         .then(data => {
@@ -499,6 +593,12 @@ restartBtn.addEventListener('click', () => {
 window.addEventListener('load', () => {
     renderBest();
     endBtn.style.display = isUnlimited ? '' : 'none';
+    if (serverMode) {
+        // The game (and round 1's clock) starts when the rules are closed: see hideFeedback()
+        gameState.maxRounds = isUnlimited ? 0 : (parseInt(selectedRounds, 10) || 5);
+        displayGameRules();
+        return;
+    }
     loadGameData(() => {
         setupRound();
         displayGameRules();

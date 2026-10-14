@@ -45,7 +45,19 @@
             <p>UManitoba Guesser (umanitobaguesser.ca) is a free, student-made game. This page explains what information is used when you visit the site.</p>
 
             <h2>What we collect</h2>
-            <p>We don't have accounts, logins or a database of players, and we don't ask for your name or email to play. Your game runs in your browser.</p>
+            <p>You don't need an account, and we never ask for your name or email to play.</p>
+
+            <h2>Guest game sessions</h2>
+            <p>To keep scores fair, the game checks your guesses on our server instead of in your browser. When you start playing:</p>
+            <ul>
+                <li><strong>A guest session is created.</strong> Your browser gets a random guest ID and a session token, saved in local storage so you stay the same guest on your next visit. It isn't linked to your name, email or any account.</li>
+                <li><strong>Your rounds are stored on our server</strong> under that random ID: the point you picked on the map, how far off it was, your score, the difficulty and number of rounds, and when each round started and was answered.</li>
+                <li><strong>Where:</strong> our database is hosted by <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Supabase</a> in its Canada (Central) region. Like any web service, Supabase also logs technical details of each request, such as your IP address, to run and protect the service.</li>
+                <li><strong>How long:</strong> guest data is deleted automatically once a guest hasn't started a game for 30 days (checked daily). Clearing this site's data in your browser removes the session token, and the records on our server can then no longer be linked to you.</li>
+            </ul>
+
+            <h2>Bot check</h2>
+            <p>The first time your browser starts a guest session, <a href="https://www.cloudflare.com/turnstile-privacy-policy/" target="_blank" rel="noopener">Cloudflare Turnstile</a> checks that you're a person and not a bot. It's usually invisible. Cloudflare processes technical information from your browser to do this, and uses it only to detect bots.</p>
 
             <h2>Data stored on your device</h2>
             <p>The site saves a few small preferences in your browser's local storage so the game works the way you left it:</p>
@@ -54,8 +66,9 @@
                 <li>Whether sound is muted</li>
                 <li>Your personal best score for each game mode</li>
                 <li>The classes and calendar settings you choose on the Class Calendar page</li>
+                <li>Your guest session token (see above), which is sent only to our game server</li>
             </ul>
-            <p>This data never leaves your device. You can clear it at any time in your browser settings.</p>
+            <p>Apart from the guest session token, this data never leaves your device. You can clear it at any time in your browser settings.</p>
 
             <h2>Advertising and cookies</h2>
             <p>We use Google AdSense to show ads, which helps cover the cost of running the site.</p>
@@ -73,13 +86,16 @@
             <ul>
                 <li>OpenStreetMap, for the map tiles</li>
                 <li>unpkg.com, for the Leaflet map library</li>
+                <li>jsDelivr, for the Supabase library that talks to our game server</li>
+                <li>Supabase, which hosts our game server and database (Canada)</li>
+                <li>Cloudflare Turnstile, for the bot check</li>
                 <li>Font Awesome and Google Fonts, for icons and fonts</li>
                 <li>Google AdSense, for advertising</li>
             </ul>
             <p>Links to Discord and Instagram take you to those services, which have their own privacy policies.</p>
 
             <h2>Children</h2>
-            <p>The site is designed for a general audience, is not directed at children under 13, and does not knowingly collect personal information from anyone.</p>
+            <p>The site is designed for a general audience and is not directed at children under 13. Guest sessions aren't linked to names or contact details, and we don't knowingly collect personal information from children.</p>
 
             <h2>Changes</h2>
             <p>We may update this policy as the site changes. The date at the top shows when it was last revised.</p>

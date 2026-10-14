@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+"""
+import_locations.py - build a repeatable SQL import of the game's answer key.
+
+Reads the existing public file   locations/locations.json   (read-only; it is
+NOT modified), validates every entry, and writes an idempotent SQL file that
+upserts the rows into public.locations and then checks the result.
+
+The generated SQL contains coordinates, so it is written to a git-ignored
+path by default:   supabase/seed/locations.local.sql
+
+Usage (from the project folder):
+    python supabase/scripts/import_locations.py                    # validate + write SQL
+    python supabase/scripts/import_locations.py --check            # validate only
+    python supabase/scripts/import_locations.py --out -            # print SQL to stdout
+    python supabase/scripts/import_locations.py --duplicates first # see "Duplicates"
+
+Then apply it (see docs/backend/setup.md):
+    psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f supabase/seed/locations.local.sql
+Locally, `supabase db reset` also loads it automatically (supabase/config.toml).
+
+Re-running is safe: rows are matched on legacy_name. Coordinates are updated
+if they changed; the opaque public_key of an existing row is never changed.
+Rows that are no longer in the JSON are reported, not deleted (deleting
+would break game history; deactivate them instead).
+
+Duplicates: two entries with the same name (case-insensitive) are an error by
+default, because the answer is ambiguous. Decide which entry is correct, then
+either fix locations.json or pass --duplicates first|last to keep that one.
+"""
+import argparse
+import json
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+SRC = ROOT / "locations" / "locations.json"
+IMG_DIR = ROOT / "locations" / "IMG"
+DEFAULT_OUT = ROOT / "supabase" / "seed" / "locations.local.sql"
+
+# Same bounds the game uses for the map (CAMPUS_BOUNDS in static/game.js)
+LAT_MIN, LAT_MAX = 49.790, 49.826
+LNG_MIN, LNG_MAX = -97.170, -97.095
+NAME_RE = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
+
+
+def fail(msg):
+    print(f"ERROR: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def load_and_validate(dup_policy):
+    if not SRC.exists():
+        fail(f"{SRC} not found")
+    try:
+        data = json.loads(SRC.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        fail(f"{SRC} is not valid JSON: {e}")
+
+    rows = data.get("locations") if isinstance(data, dict) else None
+    if not isinstance(rows, list) or not rows:
+        fail('expected {"locations": [ ... ]} with at least one entry')
+
+    errors, dups = [], []
+    kept = {}  # lower(name) -> (name, lat, lng, index)
+    for i, r in enumerate(rows):
+        where = f"entry #{i}"
+        if not isinstance(r, dict):
+            errors.append(f"{where}: not an object")
+            continue
+        name, cords = r.get("name"), r.get("cords")
+        if not isinstance(name, str) or not NAME_RE.match(name):
+            errors.append(f"{where}: bad name {name!r}")
+            continue
+        where = f"{name} (#{i})"
+        if (not isinstance(cords, list) or len(cords) != 2
+                or not all(isinstance(c, (int, float)) and not isinstance(c, bool) for c in cords)):
+            errors.append(f"{where}: cords must be [lat, lng] numbers")
+            continue
+        lat, lng = float(cords[0]), float(cords[1])
+        if not (LAT_MIN <= lat <= LAT_MAX and LNG_MIN <= lng <= LNG_MAX):
+            errors.append(f"{where}: [{lat}, {lng}] is outside the campus bounds")
+            continue
+        key = name.lower()
+        if key in kept:
+            prev = kept[key]
+            dups.append(f"{name}: #{prev[3]} [{prev[1]}, {prev[2]}] vs #{i} [{lat}, {lng}]")
+            if dup_policy == "first":
+                continue
+        kept[key] = (name, lat, lng, i)
+
+    if dups and dup_policy == "fail":
+        errors += [f"duplicate name {d}" for d in dups]
+    if errors:
+        hint = "\n  (duplicates: fix locations.json or pass --duplicates first|last)" if dups else ""
+        fail("validation failed:\n  " + "\n  ".join(errors) + hint)
+    for d in dups:
+        print(f"WARNING: duplicate {d} -> kept the {dup_policy} one", file=sys.stderr)
+
+    out = [(n, lat, lng) for n, lat, lng, _ in kept.values()]
+
+    # Photo cross-check (warnings only: a missing photo is a game bug, not an import blocker)
+    imgs = {p.stem for p in IMG_DIR.glob("*.jpg")} if IMG_DIR.exists() else set()
+    missing = sorted(n for n, _, _ in out if n not in imgs)
+    unused = sorted(imgs - {n for n, _, _ in out})
+    return out, missing, unused
+
+
+def sql_literal(s):
+    return "'" + s.replace("'", "''") + "'"
+
+
+def build_sql(rows):
+    values = ",\n".join(f"  ({sql_literal(n)}, {lat!r}::float8, {lng!r}::float8, 'fort_garry')"
+                        for n, lat, lng in rows)
+    names = ", ".join(sql_literal(n) for n, _, _ in rows)
+    return f"""-- GENERATED by supabase/scripts/import_locations.py - do not edit, do not commit.
+-- Source: locations/locations.json ({len(rows)} locations)
+begin;
+
+insert into public.locations (legacy_name, lat, lng, campus) values
+{values}
+on conflict (legacy_name) do update
+  set lat = excluded.lat,
+      lng = excluded.lng
+  where public.locations.lat is distinct from excluded.lat
+     or public.locations.lng is distinct from excluded.lng;
+
+-- Verify: every source row is present with matching coordinates
+do $verify$
+declare
+  expected int := {len(rows)};
+  found int;
+  extra text;
+begin
+  select count(*) into found
+  from public.locations l
+  join (values
+{values}
+  ) as src(name, lat, lng, campus) on src.name = l.legacy_name
+  where l.lat = src.lat and l.lng = src.lng;
+  if found <> expected then
+    raise exception 'location import check failed: % of % rows match', found, expected;
+  end if;
+
+  select string_agg(legacy_name, ', ') into extra
+  from public.locations where legacy_name not in ({names});
+  if extra is not null then
+    raise notice 'locations in the database but not in locations.json (left unchanged): %', extra;
+  end if;
+  raise notice 'location import OK: % rows verified', found;
+end
+$verify$;
+
+commit;
+"""
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--check", action="store_true", help="validate only, write nothing")
+    ap.add_argument("--out", default=str(DEFAULT_OUT), help="output path, or - for stdout")
+    ap.add_argument("--duplicates", choices=["fail", "first", "last"], default="fail",
+                    help="what to do with duplicate names (default: fail)")
+    args = ap.parse_args()
+
+    rows, missing, unused = load_and_validate(args.duplicates)
+    lats = [r[1] for r in rows]
+    lngs = [r[2] for r in rows]
+    print(f"OK: {len(rows)} locations valid "
+          f"(lat {min(lats):.5f}..{max(lats):.5f}, lng {min(lngs):.5f}..{max(lngs):.5f})", file=sys.stderr)
+    if missing:
+        print(f"WARNING: no photo for: {', '.join(missing)}", file=sys.stderr)
+    if unused:
+        print(f"note: photos not used by any location: {', '.join(unused)}", file=sys.stderr)
+
+    if args.check:
+        return
+    sql = build_sql(rows)
+    if args.out == "-":
+        sys.stdout.write(sql)
+    else:
+        out = Path(args.out)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(sql, encoding="utf-8", newline="\n")
+        print(f"wrote {out}", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()
