@@ -108,7 +108,7 @@
         e.preventDefault();
         busy($('codeBtn'), true, 'Checking…');
         try {
-            await api.auth.verifyCode(pendingEmail, $('code').value.trim(), pendingMode);
+            await api.auth.verifyCode(pendingEmail, $('code').value.replace(/\D/g, ''), pendingMode);
             $('codeForm').hidden = true;
             $('emailForm').hidden = false;
             await render();
@@ -215,7 +215,7 @@
         e.preventDefault();
         busy($('deleteBtn'), true, 'Deleting…');
         try {
-            await api.auth.verifyCode(pendingEmail, $('deleteCode').value.trim(), 'signin');
+            await api.auth.verifyCode(pendingEmail, $('deleteCode').value.replace(/\D/g, ''), 'signin');
             await api.auth.deleteAccount();
             $('deleteForm').hidden = true;
             msg('Your account and all its data have been deleted.', 'ok');

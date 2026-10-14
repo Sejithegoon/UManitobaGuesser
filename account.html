@@ -62,8 +62,8 @@
                     <p class="hint">New here? The same code creates your account. If you've been playing as a guest, your games come with you.</p>
                 </form>
                 <form id="codeForm" class="acct-form" hidden>
-                    <label for="code">6-digit code sent to <strong id="codeEmail"></strong></label>
-                    <input id="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required placeholder="123456">
+                    <label for="code">Code sent to <strong id="codeEmail"></strong></label>
+                    <input id="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}" maxlength="10" required placeholder="12345678">
                     <button type="submit" class="primary-btn" id="codeBtn">Sign in</button>
                     <p class="hint"><button type="button" class="link-btn" id="changeEmail">Use a different email</button> · Codes can take a minute to arrive. Check your junk folder.</p>
                 </form>
@@ -129,7 +129,7 @@
                     <button type="button" class="danger-btn" id="deleteStart">Delete my account</button>
                     <form id="deleteForm" class="acct-form" hidden>
                         <label for="deleteCode">To confirm, enter the code we just emailed you</label>
-                        <input id="deleteCode" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required placeholder="123456">
+                        <input id="deleteCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10" pattern="[0-9]{6,10}" required placeholder="12345678">
                         <button type="submit" class="danger-btn" id="deleteBtn">Permanently delete</button>
                     </form>
                 </div>
