@@ -12,3 +12,4 @@ supabase/.temp/
 supabase/.branches/
 supabase/seed/*.local.sql
 supabase/tests/.harness/
+supabase/seed/*.local.json

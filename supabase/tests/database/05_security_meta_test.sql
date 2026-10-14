@@ -1,7 +1,7 @@
 -- Schema-wide security invariants (guards against future migrations
 -- accidentally opening something up)
 begin;
-select plan(6);
+select plan(7);
 
 select is(
   (select coalesce(string_agg(c.relname, ', '), '')
@@ -24,6 +24,12 @@ select is(
   '', 'no client role can execute a privileged (SECURITY DEFINER) helper');
 
 select ok(not has_schema_privilege('anon', 'private', 'USAGE'), 'visitors cannot use the private schema');
+
+select is(
+  (select coalesce(string_agg(p.proname, ', '), '')
+     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'EXECUTE')),
+  '', 'no privileged public function is callable without a session');
 
 select is(
   (select coalesce(string_agg(table_name || '.' || privilege_type, ', '), '')
