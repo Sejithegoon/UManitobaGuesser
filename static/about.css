@@ -1,4 +1,4 @@
-/* static/about.css */
+/* static/about.css  (buttons come from main.css) */
 .aboutMain {
     display: flex;
     justify-content: center;
@@ -11,32 +11,34 @@
     background-color: var(--card-bg);
     max-width: 900px;
     width: 100%;
-    padding: 60px 50px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-lg);
+    padding: 56px 50px;
+    border: 2px solid var(--line);
+    border-top: 6px solid var(--secondary-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
     text-align: center;
-    transition: background-color 0.3s ease;
+    animation: rise 0.5s var(--ease-out) both;
 }
 
 .about-card h1 {
-    color: var(--primary-color);
+    color: var(--heading);
     font-size: 4rem;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .divider {
-    height: 4px;
+    height: 5px;
     width: 80px;
     background-color: var(--secondary-color);
-    margin: 0 auto 35px;
-    border-radius: 2px;
+    margin: 0 auto 32px;
+    border-radius: var(--radius-pill);
 }
 
 .about-card p {
     color: var(--text-main);
     font-size: 1.15rem;
     line-height: 1.7;
-    margin-bottom: 50px;
+    margin-bottom: 44px;
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
@@ -45,23 +47,26 @@
 .about-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin-bottom: 60px;
+    gap: 24px;
+    margin-bottom: 56px;
 }
 
 .info-box, .ig-widget {
-    background-color: var(--bg-color);
-    padding: 40px 30px;
-    border-radius: var(--border-radius);
+    background-color: var(--surface);
+    padding: 32px 28px;
+    border: 2px solid var(--line);
     border-left: 6px solid var(--primary-color);
+    border-radius: var(--border-radius);
     text-align: left;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 4px 0 var(--line);
 }
+.ig-widget { border-left-color: #dd2a7b; }
+.info-box p, .ig-widget p { font-size: 1.05rem; margin-bottom: 0; }
 
 .info-box h3, .ig-widget h3 {
     font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 15px;
+    color: var(--heading);
+    margin-bottom: 12px;
 }
 
 .ig-placeholder {
@@ -69,55 +74,64 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 15px;
+    gap: 14px;
     text-align: center;
 }
 
 .ig-placeholder i {
     font-size: 45px;
-    color: #E1306C; 
+    color: #E1306C;
+    transition: transform 0.4s var(--ease-pop);
 }
+.ig-widget:hover .ig-placeholder i { transform: rotate(-8deg) scale(1.1); }
 
-.primary-btn {
-    background-color: var(--primary-color);
-    color: white;
-    font-size: 1.2rem;
-    padding: 15px 40px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.cta-section {
+    padding: 30px 20px 34px;
+    background: var(--surface);
+    border: 2px dashed var(--line-strong);
+    border-radius: var(--radius-lg);
 }
-
-.primary-btn:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-2px);
-}
-
-.secondary-btn {
-    background-color: var(--secondary-color);
-    color: #121212;
-    padding: 10px 25px;
-    font-size: 1rem;
-}
-
-.secondary-btn:hover {
-    background-color: var(--secondary-hover);
-    transform: translateY(-2px);
-}
+.cta-section h2 { color: var(--heading); font-size: 2.2rem; }
+.cta-section .play-now { margin-top: 16px; }
 
 /* Long-form text (story, campus, FAQ) */
-.about-text { text-align: left; max-width: 720px; margin: 0 auto 60px; }
-.about-text h2 { color: var(--primary-color); font-size: 2.2rem; margin: 36px 0 10px; }
+.about-text { text-align: left; max-width: 720px; margin: 0 auto 56px; }
+.about-text h2 { color: var(--heading); font-size: 2.2rem; margin: 36px 0 10px; }
 .about-text h2:first-child { margin-top: 0; }
-.about-text h3 { font-family: 'Fira Sans', sans-serif; font-weight: 600; font-size: 1.1rem; letter-spacing: 0; color: var(--text-main); margin: 20px 0 4px; }
+.about-text h3 {
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1.08rem;
+    letter-spacing: 0;
+    color: var(--text-main);
+    margin: 14px 0 0;
+    padding: 12px 16px 0;
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-bottom: none;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
 .about-card .about-text p { font-size: 1.05rem; line-height: 1.7; margin: 0 0 14px; max-width: none; }
-.about-text a { color: var(--primary-color); text-decoration: underline; }
-html.dark-mode .about-text a { color: var(--secondary-color); }
+/* FAQ answers sit in the same panel as their question */
+.about-card .about-text h3 + p {
+    margin: 0;
+    padding: 4px 16px 14px;
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-top: none;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    font-size: 1rem;
+}
+.about-text a { color: var(--heading); text-decoration: underline; text-underline-offset: 3px; }
+.about-text a:hover { color: var(--secondary-shade); }
+html.dark-mode .about-text a:hover { color: var(--secondary-color); }
 
 @media (max-width: 768px) {
     .about-grid {
         grid-template-columns: 1fr;
     }
     .about-card {
-        padding: 40px 25px;
+        padding: 36px 20px;
     }
+    .about-card h1 { font-size: 3.2rem; }
 }

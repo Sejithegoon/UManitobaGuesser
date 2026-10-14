@@ -27,19 +27,19 @@
 <body>
     <nav class="nav" id="siteNav">
         <div class="logo">
-            <a href="./index.html"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
+            <a href="./"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
         </div>
         <div class="nav-right">
             <div class="links" id="navLinks">
                 <ul>
-                    <li><a href="./index.html" class="active" aria-current="page">Home</a></li>
-                    <li class="nav-play"><a class="playButton" id="playLinkNav" href="./play.html?diff=easy&rounds=5"><button>Play</button></a></li>
-                    <li><a href="./calendar.html">Class Calendar</a></li>
+                    <li><a href="./" class="active" aria-current="page">Home</a></li>
+                    <li class="nav-play"><a class="nav-play-btn" id="playLinkNav" href="./play.html?diff=easy&rounds=5">Play</a></li>
                     <li><a href="./about.html">About Us</a></li>
                 </ul>
             </div>
-            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
-            <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
+            <a class="icon-btn" href="./calendar.html" aria-label="Class Calendar" data-tip="Class Calendar"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></a>
+            <button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" data-tip="Light / dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
         </div>
     </nav>
 
@@ -70,8 +70,8 @@
                 </div>
             </div>
 
-            <div class="playButton" style="margin-top: 10px;">
-                <a id="playLinkBtn" href="./play.html?diff=easy&rounds=5"><button class="play">PLAY NOW</button></a>
+            <div class="hero-cta">
+                <a id="playLinkBtn" class="play-now" href="./play.html?diff=easy&rounds=5">Play now</a>
             </div>
 
             <script>
@@ -135,11 +135,11 @@
                 <div class="cta-row">
                     <div class="discord-cta">
                         <span>JOIN THE DISCORD</span>
-                        <a href="https://discord.gg/s3Sta8cj5B"><button class="discord-btn"><i class='fab fa-discord'></i> Open Discord</button></a>
+                        <a class="discord-btn" href="https://discord.gg/s3Sta8cj5B"><i class='fab fa-discord'></i> Open Discord</a>
                     </div>
                     <div class="instagram-cta">
                         <span>FOLLOW US</span>
-                        <a href="https://www.instagram.com/umanitobaguesser/" target="_blank" rel="noopener"><button class="instagram-btn"><i class="fa-brands fa-instagram"></i> Open Instagram</button></a>
+                        <a class="instagram-btn" href="https://www.instagram.com/umanitobaguesser/" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i> Open Instagram</a>
                     </div>
                 </div>
             </div>

@@ -119,6 +119,12 @@ function renderBest() { const b = getBest(); bestEl.textContent = b ? `Best: ${b
 function animateScore(to) {
     const from = displayedScore;
     displayedScore = to;
+    if (to > from) {            // visual only: little bump on the score card
+        const badge = scoreEl.parentElement;
+        badge.classList.remove('bump');
+        void badge.offsetWidth;
+        badge.classList.add('bump');
+    }
     const start = performance.now(), dur = 600;
     (function step(now) {
         const t = Math.min(1, (now - start) / dur);

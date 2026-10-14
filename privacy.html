@@ -21,19 +21,19 @@
 <body>
     <nav class="nav" id="siteNav">
         <div class="logo">
-            <a href="./index.html"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
+            <a href="./"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
         </div>
         <div class="nav-right">
             <div class="links" id="navLinks">
                 <ul>
-                    <li><a href="./index.html">Home</a></li>
-                    <li class="nav-play"><a class="playButton" href="./play.html?diff=easy&rounds=5"><button>Play</button></a></li>
-                    <li><a href="./calendar.html">Class Calendar</a></li>
+                    <li><a href="./">Home</a></li>
+                    <li class="nav-play"><a class="nav-play-btn" href="./play.html?diff=easy&rounds=5">Play</a></li>
                     <li><a href="./about.html">About Us</a></li>
                 </ul>
             </div>
-            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
-            <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
+            <a class="icon-btn" href="./calendar.html" aria-label="Class Calendar" data-tip="Class Calendar"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></a>
+            <button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" data-tip="Light / dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
         </div>
     </nav>
 

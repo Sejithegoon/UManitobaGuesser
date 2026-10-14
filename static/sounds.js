@@ -133,7 +133,7 @@
         if (icon) icon.className = muted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
         if (btn) {
             btn.setAttribute('aria-pressed', String(muted));
-            btn.title = muted ? 'Sound off (click to turn on)' : 'Sound on (click to mute)';
+            btn.dataset.tip = muted ? 'Unmute sound' : 'Mute sound';
         }
     }
 

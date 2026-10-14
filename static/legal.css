@@ -1,17 +1,40 @@
-/* static/legal.css (privacy + 404 pages) */
+/* static/legal.css (privacy, how-to-play + 404 pages; buttons come from main.css) */
 .legalMain { display: flex; justify-content: center; padding: 40px 20px; min-height: calc(100vh - 130px); }
-.legal-card { background: var(--card-bg); max-width: 800px; width: 100%; padding: 50px 45px; border-radius: var(--border-radius); box-shadow: var(--shadow-lg); height: fit-content; }
-.legal-card h1 { color: var(--primary-color); font-size: 3.2rem; margin-bottom: 6px; }
+.legal-card {
+    background: var(--card-bg);
+    max-width: 800px;
+    width: 100%;
+    padding: 50px 45px;
+    border: 2px solid var(--line);
+    border-top: 6px solid var(--secondary-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+    height: fit-content;
+    animation: rise 0.5s var(--ease-out) both;
+}
+.legal-card h1 { color: var(--heading); font-size: 3.2rem; line-height: 1.05; margin-bottom: 6px; }
 .legal-card .updated { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 28px; }
-.legal-card h2 { color: var(--primary-color); font-size: 1.8rem; margin: 28px 0 8px; }
+.legal-card h2 {
+    color: var(--heading);
+    font-size: 1.8rem;
+    margin: 32px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.legal-card h2::before { content: ""; flex: none; width: 6px; height: 0.9em; border-radius: var(--radius-pill); background: var(--secondary-color); transform: translateY(-2px); }
+.legal-card h3 { color: var(--text-main); font-family: 'Fira Sans', sans-serif; font-weight: 600; font-size: 1.1rem; letter-spacing: 0; margin: 18px 0 4px; }
 .legal-card p, .legal-card li { line-height: 1.7; font-size: 1.05rem; margin-bottom: 10px; }
 .legal-card ul { padding-left: 22px; list-style: disc; }
 .legal-card ol { padding-left: 22px; list-style: decimal; }
-.legal-card h3 { color: var(--text-main); font-family: 'Fira Sans', sans-serif; font-weight: 600; font-size: 1.1rem; letter-spacing: 0; margin: 18px 0 4px; }
-.legal-card a { color: var(--primary-color); text-decoration: underline; }
-.legal-card a:hover { color: var(--secondary-color); }
+.legal-card li::marker { color: var(--secondary-shade); font-weight: 700; }
+html.dark-mode .legal-card li::marker { color: var(--secondary-color); }
+.legal-card a:not(.home-btn):not(.play-now) { color: var(--heading); text-decoration: underline; text-underline-offset: 3px; }
+.legal-card a:not(.home-btn):not(.play-now):hover { color: var(--secondary-shade); }
+html.dark-mode .legal-card a:not(.home-btn):not(.play-now):hover { color: var(--secondary-color); }
 .legal-card.center { text-align: center; }
-.legal-card .big { font-family: "Bebas Neue", sans-serif; font-size: 7rem; line-height: 1; color: var(--secondary-color); }
-.legal-card a.home-btn { display: inline-block; margin-top: 16px; background: var(--primary-color); color: #fff; padding: 12px 30px; border-radius: var(--border-radius); font-weight: 600; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; }
-.legal-card a.home-btn:hover { background: var(--primary-hover); color: #fff; }
-@media (max-width: 600px) { .legal-card { padding: 32px 22px; } }
+.legal-card.center h2 { justify-content: center; }
+.legal-card .big { font-family: "Bebas Neue", sans-serif; font-size: 7rem; line-height: 1; color: var(--secondary-color); text-shadow: 0 5px 0 var(--secondary-shade); animation: cheer 0.8s var(--ease-pop) 0.2s both; }
+@keyframes cheer { 40% { transform: scale(1.12) rotate(-4deg); } 100% { transform: none; } }
+.legal-card a.home-btn { margin-top: 16px; min-height: 50px; padding: 0 30px; text-transform: uppercase; letter-spacing: 1px; }
+@media (max-width: 600px) { .legal-card { padding: 30px 20px; } .legal-card h1 { font-size: 2.7rem; } }

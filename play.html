@@ -25,19 +25,20 @@
 <body>
     <nav class="nav" id="siteNav">
         <div class="logo">
-            <a href="./index.html"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
+            <a href="./"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
         </div>
         <div class="nav-right">
             <div class="links" id="navLinks">
                 <ul>
-                    <li><a href="./index.html">Home</a></li>
-                    <li><a href="./calendar.html">Class Calendar</a></li>
+                    <li><a href="./">Home</a></li>
+                    <li class="nav-play"><a class="nav-play-btn active" href="./play.html?diff=easy&rounds=5" aria-current="page">Play</a></li>
                     <li><a href="./about.html">About Us</a></li>
                 </ul>
             </div>
-            <button class="theme-toggle" id="soundToggle" aria-label="Toggle sound" title="Sound on (click to mute)"><i id="soundIcon" class="fa-solid fa-volume-high"></i></button>
-            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
-            <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
+            <button type="button" class="theme-toggle sound-toggle" id="soundToggle" aria-label="Toggle sound" data-tip="Mute sound"><i id="soundIcon" class="fa-solid fa-volume-high"></i></button>
+            <a class="icon-btn" href="./calendar.html" aria-label="Class Calendar" data-tip="Class Calendar"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></a>
+            <button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" data-tip="Light / dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
         </div>
     </nav>
 
@@ -84,7 +85,7 @@
                 <div class="gameButtons">
                     <button id="guessButton" class="primary-btn" disabled>Guess</button>
                     <button id="endButton" class="secondary-btn" style="display:none">End Game</button>
-                    <button id="restartButton" class="secondary-btn">Restart</button>
+                    <button id="restartButton" class="neutral-btn">Restart</button>
                 </div>
                 <div class="score-badge">
                     <p id="score">Score: 0 🦬</p>
@@ -97,7 +98,7 @@
     <!-- Rules / info popup -->
     <div id="feedbackModal" class="modal hidden">
         <div class="modalContent">
-            <span id="closeModal" role="button" aria-label="Close">&times;</span>
+            <button type="button" id="closeModal" class="modal-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
             <p id="feedbackMessage"></p>
         </div>
     </div>
@@ -105,7 +106,7 @@
     <!-- End of game results -->
     <div id="resultsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="resRank">
         <div class="modalContent results-card">
-            <span id="closeResults" role="button" aria-label="Close results">&times;</span>
+            <button type="button" id="closeResults" class="modal-close" aria-label="Close results"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
             <h2 id="resRank"></h2>
             <p id="resNew" class="res-new" hidden>🎉 New personal best!</p>
             <div class="res-score"><span id="resScore">0</span><small id="resMax"></small></div>
@@ -126,10 +127,10 @@
                 <p>Connect via Discord to get the latest updates on <strong>UManitoba Guesser</strong>.</p>
                 <div class="cta-row">
                     <div class="discord-cta">
-                        <a href="https://discord.gg/s3Sta8cj5B"><button class="discord-btn"><i class='fab fa-discord'></i> Discord</button></a>
+                        <a class="discord-btn" href="https://discord.gg/s3Sta8cj5B"><i class='fab fa-discord'></i> Discord</a>
                     </div>
                     <div class="instagram-cta">
-                        <a href="https://www.instagram.com/umanitobaguesser/" target="_blank" rel="noopener"><button class="instagram-btn"><i class="fa-brands fa-instagram"></i> Instagram</button></a>
+                        <a class="instagram-btn" href="https://www.instagram.com/umanitobaguesser/" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i> Instagram</a>
                     </div>
                 </div>
             </div>
