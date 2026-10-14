@@ -28,9 +28,11 @@
                 <ul>
                     <li><a href="./">Home</a></li>
                     <li class="nav-play"><a class="nav-play-btn" href="./play.html?diff=easy&rounds=5">Play</a></li>
+                    <li><a href="./leaderboard.html">Leaderboard</a></li>
                     <li><a href="./about.html">About Us</a></li>
                 </ul>
             </div>
+            <a class="icon-btn" href="./account.html" aria-label="Your account" data-tip="Account"><i class="fa-solid fa-user" aria-hidden="true"></i></a>
             <a class="icon-btn" href="./calendar.html" aria-label="Class Calendar" data-tip="Class Calendar"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></a>
             <button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" data-tip="Light / dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
             <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
@@ -45,7 +47,7 @@
             <p>UManitoba Guesser (umanitobaguesser.ca) is a free, student-made game. This page explains what information is used when you visit the site.</p>
 
             <h2>What we collect</h2>
-            <p>You don't need an account, and we never ask for your name or email to play.</p>
+            <p>You don't need an account to play, and we never ask for your name. If you create an account, we use your email address to sign you in.</p>
 
             <h2>Guest game sessions</h2>
             <p>To keep scores fair, the game checks your guesses on our server instead of in your browser. When you start playing:</p>
@@ -58,6 +60,16 @@
 
             <h2>Bot check</h2>
             <p>The first time your browser starts a guest session, <a href="https://www.cloudflare.com/turnstile-privacy-policy/" target="_blank" rel="noopener">Cloudflare Turnstile</a> checks that you're a person and not a bot. It's usually invisible. Cloudflare processes technical information from your browser to do this, and uses it only to detect bots.</p>
+
+            <h2>Accounts (optional)</h2>
+            <ul>
+                <li><strong>Email:</strong> we sign you in by emailing a one-time code, so there's no password. Your email is stored by our authentication provider, Supabase, and is never shown to other players.</li>
+                <li><strong>Username:</strong> the name you choose is public. It appears on the leaderboard next to your best ranked scores.</li>
+                <li><strong>Games:</strong> your finished games, scores and best scores are linked to your account. When you create a new account in a browser where you've been playing as a guest, your guest games stay with your new account. If you sign in to an account you already had, your guest games are deleted with other guest data after 30 days.</li>
+                <li><strong>University verification:</strong> to join the ranked leaderboard, you can verify a @myumanitoba.ca or @umanitoba.ca email. We email that address a one-time code. We <strong>don't store the address</strong>: we keep only a one-way scrambled fingerprint of it (a keyed hash), so the same university email can't verify two accounts, plus the domain and the date you verified.</li>
+                <li><strong>Email delivery:</strong> codes are sent by our email provider, Resend, which processes the recipient address to deliver the message and keeps delivery logs under <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">its privacy policy</a>.</li>
+                <li><strong>Deleting your account:</strong> on your account page you can delete your account at any time after confirming with a code. Your account, username, games, scores and verification are deleted immediately. We keep only your account's random ID and the deletion date for 35 days, so the deletion can be re-applied if we ever restore a backup.</li>
+            </ul>
 
             <h2>Data stored on your device</h2>
             <p>The site saves a few small preferences in your browser's local storage so the game works the way you left it:</p>
@@ -87,7 +99,8 @@
                 <li>OpenStreetMap, for the map tiles</li>
                 <li>unpkg.com, for the Leaflet map library</li>
                 <li>jsDelivr, for the Supabase library that talks to our game server</li>
-                <li>Supabase, which hosts our game server and database (Canada)</li>
+                <li>Supabase, which hosts our game server, accounts and database (Canada)</li>
+                <li>Resend, which sends sign-in and verification emails</li>
                 <li>Cloudflare Turnstile, for the bot check</li>
                 <li>Font Awesome and Google Fonts, for icons and fonts</li>
                 <li>Google AdSense, for advertising</li>
@@ -108,7 +121,7 @@
     <footer>
         <div class="footer-container">
             <div class="footer-bottom" style="margin-top:0;border-top:none;padding-top:0">
-                <nav class="footer-links" aria-label="Site pages"><a href="./index.html">Home</a><a href="./how-to-play.html">How to Play</a><a href="./calendar.html">Class Calendar</a><a href="./about.html">About &amp; FAQ</a><a href="./privacy.html">Privacy Policy</a><a href="mailto:umanitobaguesser@gmail.com">Contact</a></nav>
+                <nav class="footer-links" aria-label="Site pages"><a href="./index.html">Home</a><a href="./how-to-play.html">How to Play</a><a href="./leaderboard.html">Leaderboard</a><a href="./calendar.html">Class Calendar</a><a href="./about.html">About &amp; FAQ</a><a href="./privacy.html">Privacy Policy</a><a href="mailto:umanitobaguesser@gmail.com">Contact</a></nav>
                 <p>&copy; 2026 UManitoba Guesser | Built by Bisons for Bisons 🦬</p>
             </div>
         </div>

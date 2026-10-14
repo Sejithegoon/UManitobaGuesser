@@ -63,14 +63,24 @@
         return loadScript(SDK_URL, SDK_SRI);
     }
 
-    // One client per page; signs in as a guest if there is no session yet
+    // One Supabase client per page (no sign-in by itself)
+    let basePromise = null;
+    function baseClient() {
+        if (!basePromise) {
+            basePromise = loadSdk()
+                .then(() => window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey, {
+                    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+                }))
+                .catch(err => { basePromise = null; throw err; });
+        }
+        return basePromise;
+    }
+
+    // For the game: make sure there's a session, signing in as a guest if needed
     function client() {
         if (!clientPromise) {
             clientPromise = (async () => {
-                await loadSdk();
-                const c = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey, {
-                    auth: { persistSession: true, autoRefreshToken: true }
-                });
+                const c = await baseClient();
                 const { data } = await c.auth.getSession();
                 if (!data.session) {
                     // Returning guests reuse their saved session, so the bot check runs once per browser
@@ -84,19 +94,116 @@
         return clientPromise;
     }
 
-    async function rpc(fn, args) {
-        const c = await client();
+    async function rpc(fn, args, c) {
+        c = c || await client();
         const { data, error } = await c.rpc(fn, args);
         if (error) throw Object.assign(new Error(error.message || 'rpc_failed'), { code: error.code });
         return data;
     }
 
+    // Edge Functions (UM verification, account deletion) with the caller's session
+    async function callFunction(name, body) {
+        const c = await baseClient();
+        const { data } = await c.auth.getSession();
+        if (!data.session) throw Object.assign(new Error('not_signed_in'), { reason: 'not_signed_in' });
+        const res = await fetch(`${cfg.supabaseUrl}/functions/v1/${name}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                apikey: cfg.supabaseKey,
+                Authorization: `Bearer ${data.session.access_token}`
+            },
+            body: JSON.stringify(body || {})
+        });
+        let out = {};
+        try { out = await res.json(); } catch { /* empty body */ }
+        if (!res.ok || out.ok === false) throw Object.assign(new Error(out.reason || 'request_failed'), { reason: out.reason || 'request_failed', status: res.status, data: out });
+        return out;
+    }
+
+    const accountPage = `${location.origin}/account.html`;
+
+    // Accounts: passwordless email codes. Everything here is safe to call from the browser;
+    // the database and Edge Functions enforce the rules.
+    const auth = {
+        async session() {
+            const c = await baseClient();
+            const { data } = await c.auth.getSession();
+            return data.session;
+        },
+        // Sends a 6-digit code. A guest keeps their game history by adding an email to the
+        // same account; if that email already has an account, it signs in to that one instead.
+        async sendCode(email) {
+            const c = await baseClient();
+            const { data } = await c.auth.getSession();
+            if (data.session && data.session.user.is_anonymous) {
+                const up = await c.auth.updateUser({ email }, { emailRedirectTo: accountPage });
+                if (!up.error) return 'convert';
+            }
+            const token = await captchaToken();
+            const { error } = await c.auth.signInWithOtp({
+                email,
+                options: { shouldCreateUser: true, captchaToken: token, emailRedirectTo: accountPage }
+            });
+            if (error) throw error;
+            return 'signin';
+        },
+        async verifyCode(email, code, mode) {
+            const c = await baseClient();
+            const { data, error } = await c.auth.verifyOtp({ email, token: code, type: mode === 'convert' ? 'email_change' : 'email' });
+            if (error) throw error;
+            clientPromise = null;   // the game should pick up the new session
+            return data.session;
+        },
+        async signOut() {
+            const c = await baseClient();
+            await c.auth.signOut();
+            clientPromise = null;
+        },
+        async profile() {
+            const c = await baseClient();
+            const { data: s } = await c.auth.getSession();
+            if (!s.session) return null;
+            const { data, error } = await c.from('profiles')
+                .select('id, username, is_um_verified, created_at').eq('id', s.session.user.id).maybeSingle();
+            if (error) throw error;
+            return data;
+        },
+        async saveUsername(username) {
+            const c = await baseClient();
+            const { data: s } = await c.auth.getSession();
+            const uid = s.session.user.id;
+            const existing = await this.profile();
+            const q = existing
+                ? c.from('profiles').update({ username }).eq('id', uid)
+                : c.from('profiles').insert({ id: uid, username });
+            const { error } = await q;
+            if (error) throw error;
+        },
+        async usernameAvailable(username) { return rpc('username_available', { p_username: username }, await baseClient()); },
+        async myBests() { return rpc('my_bests', {}, await baseClient()); },
+        umStart: (email) => callFunction('um-verify', { action: 'start', email }),
+        umConfirm: (code) => callFunction('um-verify', { action: 'confirm', code }),
+        async deleteAccount() {
+            const out = await callFunction('delete-account', {});
+            const c = await baseClient();
+            await c.auth.signOut({ scope: 'local' });
+            clientPromise = null;
+            return out;
+        }
+    };
+
     window.UMGApi = {
         enabled,
+        accounts: cfg.accounts !== false,
+        leaderboardEnabled: cfg.leaderboard !== false,
         startGame: (difficulty, rounds) => rpc('game_start', { p_difficulty: difficulty, p_rounds: rounds }),
         startRound: (gameId) => rpc('game_start_round', { p_game_id: gameId }),
         submit: (gameId, lat, lng) => rpc('game_submit', { p_game_id: gameId, p_lat: lat, p_lng: lng }),
         nextRound: (gameId) => rpc('game_next_round', { p_game_id: gameId }),
-        finish: (gameId) => rpc('game_finish', { p_game_id: gameId })
+        finish: (gameId) => rpc('game_finish', { p_game_id: gameId }),
+        leaderboard: async (difficulty, rounds, period) =>
+            rpc('leaderboard', { p_difficulty: difficulty, p_rounds: rounds, p_period: period }, await baseClient()),
+        auth
     };
 })();

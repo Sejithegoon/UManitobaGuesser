@@ -11,7 +11,7 @@ select tests.create_user('reg@example.com')   as reg,
        tests.create_user('noprof@example.com') as noprof,
        tests.create_user(null, true)           as guest;
 grant select on ids to anon, authenticated;
-insert into public.profiles (id, username) values ((select reg from ids), 'RankedBison');
+insert into public.profiles (id, username, is_um_verified, um_verified_at) values ((select reg from ids), 'RankedBison', true, now());  -- ranked play needs UM verification (Phase 4)
 
 insert into public.locations (legacy_name, lat, lng) values
   ('T_A', 49.80850, -97.13404), ('T_B', 49.80900, -97.13300), ('T_C', 49.81000, -97.13500),
@@ -52,7 +52,7 @@ select tests.as_user((select reg from ids));
 insert into kv values ('reg_unl', public.game_start('easy', null));
 select is((select (j->>'is_ranked')::boolean from kv where k = 'reg_unl'), false, 'unlimited games are never ranked');
 insert into kv values ('reg', public.game_start('easy', 5));
-select is((select (j->>'is_ranked')::boolean from kv where k = 'reg'), true, 'a registered player with a profile gets a ranked game');
+select is((select (j->>'is_ranked')::boolean from kv where k = 'reg'), true, 'a registered, UM-verified player with a profile gets a ranked game');
 
 select tests.as_admin();
 select is((select status from public.games where id = pg_temp.gid('reg_unl')), 'abandoned',
