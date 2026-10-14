@@ -5,7 +5,7 @@ window.UMG_CONFIG = {
     // Server-run game (answers checked by the server). false = the classic
     // in-browser game, which is what the live site uses until launch.
     // For testing, add ?server=1 (or ?server=0) to the play page URL.
-    serverGame: false,
+    serverGame: true,
 
     supabaseUrl: 'https://notsgakxgnkgcrlvnduw.supabase.co',
     supabaseKey: 'sb_publishable_A9huMQ7O27LZTi-GiXtFzg_-fVqO1H7',
