@@ -48,6 +48,7 @@
             const id = window.turnstile.render(box.querySelector('.captcha-widget'), {
                 sitekey: cfg.turnstileSiteKey,
                 appearance: 'interaction-only',
+                theme: document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light',
                 'before-interactive-callback': () => { box.hidden = false; },
                 'after-interactive-callback': () => { box.hidden = true; },
                 callback: (token) => { box.hidden = true; resolve(token); setTimeout(() => window.turnstile.remove(id), 0); },

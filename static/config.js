@@ -12,5 +12,5 @@ window.UMG_CONFIG = {
 
     // Cloudflare Turnstile SITE key (public). The SECRET key goes only in
     // Supabase: Authentication > Bot and Abuse Protection. Empty = no bot check.
-    turnstileSiteKey: ''
+    turnstileSiteKey: '0x4AAAAAAFWURn9KzuU00-d9'
 };
