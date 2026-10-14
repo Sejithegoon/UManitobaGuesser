@@ -6,6 +6,7 @@
 //   UM_EMAIL_HMAC_KEY (required), UM_HMAC_KEY_VERSION (default 1),
 //   RESEND_API_KEY + RESEND_FROM (for sending the email).
 import { adminClient, callerFrom, corsHeaders, hmacHex, json } from '../_shared/common.ts';
+import { EMAIL_HTML } from './email.ts';
 
 const ELIGIBLE_DOMAINS = ['myumanitoba.ca', 'umanitoba.ca'];
 
@@ -36,6 +37,7 @@ async function sendEmail(to: string, code: string): Promise<boolean> {
       to,
       subject: `Your UManitoba Guesser code: ${code}`,
       text: `Your UManitoba Guesser verification code is ${code}.\n\nIt expires in 15 minutes. If you didn't ask for this, you can ignore this email.`,
+      html: EMAIL_HTML.replaceAll('{{ .Token }}', code),
     }),
   });
   return res.ok;

@@ -1,0 +1,95 @@
+<!-- Supabase > Authentication > Emails > Magic Link
+     Subject: Your UManitoba Guesser sign-in code: {{ .Token }} -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<title>Your UManitoba Guesser code</title>
+<style>
+  /* Dark mode: Apple Mail, iOS Mail, Outlook (Mac/iOS); Outlook.com via [data-ogsc] */
+  @media (prefers-color-scheme: dark) {
+    .bg      { background-color:#111317 !important; }
+    .card    { background-color:#1c1f26 !important; border-color:#2c313b !important; border-top-color:#e6a10b !important; }
+    .title   { color:#8db9f3 !important; }
+    .text    { color:#e7e9ee !important; }
+    .muted   { color:#a4abb7 !important; }
+    .codebox { background-color:#23272f !important; border-color:#3a404b !important; }
+    .code    { color:#ffffff !important; }
+    .btn     { background-color:#2160ad !important; border-bottom-color:#0d2f5c !important; }
+    .foot, .foot a { color:#8a909c !important; }
+  }
+  [data-ogsc] .bg      { background-color:#111317 !important; }
+  [data-ogsc] .card    { background-color:#1c1f26 !important; border-color:#2c313b !important; }
+  [data-ogsc] .title   { color:#8db9f3 !important; }
+  [data-ogsc] .text    { color:#e7e9ee !important; }
+  [data-ogsc] .muted   { color:#a4abb7 !important; }
+  [data-ogsc] .codebox { background-color:#23272f !important; border-color:#3a404b !important; }
+  [data-ogsc] .code    { color:#ffffff !important; }
+</style>
+</head>
+<body class="bg" style="margin:0;padding:0;background-color:#f4f2ea;">
+<!-- Preview text shown in the inbox list -->
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#f4f2ea;">Your sign-in code is {{ .Token }}. It expires in 1 hour.</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="bg" style="background-color:#f4f2ea;">
+  <tr>
+    <td align="center" style="padding:32px 16px;">
+
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;">
+        <!-- Logo -->
+        <tr>
+          <td align="center" style="padding-bottom:16px;">
+            <a href="https://umanitobaguesser.ca" style="text-decoration:none;">
+              <img src="https://umanitobaguesser.ca/assets/logo-email.png" width="64" height="64" alt="UManitoba Guesser" style="display:block;border:0;width:64px;height:64px;">
+            </a>
+          </td>
+        </tr>
+
+        <!-- Card -->
+        <tr>
+          <td class="card text" style="background-color:#ffffff;border:2px solid #e3e8ef;border-top:6px solid #e6a10b;border-radius:16px;padding:32px 28px;font-family:'Fira Sans',Arial,Helvetica,sans-serif;color:#1f2430;">
+
+            <h1 class="title" style="margin:0 0 6px;font-family:'Bebas Neue',Impact,'Arial Narrow Bold',Arial,sans-serif;font-weight:400;font-size:34px;line-height:1.1;letter-spacing:1px;color:#0b3b75;text-transform:uppercase;">Your sign-in code</h1>
+            <p class="muted" style="margin:0 0 22px;font-size:16px;line-height:1.6;color:#5f6672;">Enter this code on the UManitoba Guesser account page to sign in.</p>
+
+            <!-- Code -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td align="center" class="codebox" style="background-color:#f8f6f0;border:2px dashed #c9cfd8;border-radius:14px;padding:18px 10px;">
+                  <span class="code" style="font-family:'Courier New',Courier,monospace;font-size:38px;font-weight:700;letter-spacing:10px;color:#0b3b75;">{{ .Token }}</span>
+                </td>
+              </tr>
+            </table>
+
+            <p class="text" style="margin:22px 0 0;font-size:15px;line-height:1.6;color:#1f2430;">This code expires in <strong>1 hour</strong> and can only be used once.</p>
+            <p class="muted" style="margin:10px 0 0;font-size:14px;line-height:1.6;color:#5f6672;">Didn't ask for this? You can safely ignore this email. Nobody can sign in without the code.</p>
+
+            <!-- Button -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;">
+              <tr>
+                <td class="btn" style="background-color:#0b3b75;border-radius:12px;border-bottom:4px solid #06244a;">
+                  <a href="https://umanitobaguesser.ca/account.html" style="display:inline-block;padding:12px 24px;font-family:'Fira Sans',Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;">Go to your account</a>
+                </td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td align="center" class="foot" style="padding:20px 10px 0;font-family:'Fira Sans',Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#8a8f99;">
+            UManitoba Guesser · Built by Bisons for Bisons 🦬<br>
+            <a href="https://umanitobaguesser.ca" style="color:#8a8f99;">umanitobaguesser.ca</a> · <a href="https://umanitobaguesser.ca/privacy.html" style="color:#8a8f99;">Privacy</a>
+          </td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+</table>
+</body>
+</html>
