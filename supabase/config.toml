@@ -13,3 +13,11 @@ sql_paths = ["./seed/*.local.sql"]
 [auth]
 # Guests will be anonymous users (Phase 3+). Off until then.
 enable_anonymous_sign_ins = false
+
+# Edge Functions check the caller themselves (auth.getUser), which works with
+# both legacy and new JWT signing keys, so the platform pre-check is off.
+[functions.um-verify]
+verify_jwt = false
+
+[functions.delete-account]
+verify_jwt = false

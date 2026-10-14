@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Account | UManitoba Guesser</title>
+    <meta name="description" content="Sign in to UManitoba Guesser with a one-time email code, pick a username, verify your University of Manitoba email and join the leaderboard.">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#0b3b75">
+    <link rel="shortcut icon" href="./assets/logo-main.webp" type="image/x-icon">
+    <link rel="stylesheet" href="./static/main.css">
+    <link rel="stylesheet" href="./static/legal.css">
+    <link rel="stylesheet" href="./static/account.css">
+    <script src="https://kit.fontawesome.com/edb895a006.js" crossorigin="anonymous"></script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</head>
+<body>
+    <nav class="nav" id="siteNav">
+        <div class="logo">
+            <a href="./"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
+        </div>
+        <div class="nav-right">
+            <div class="links" id="navLinks">
+                <ul>
+                    <li><a href="./">Home</a></li>
+                    <li class="nav-play"><a class="nav-play-btn" href="./play.html?diff=easy&rounds=5">Play</a></li>
+                    <li><a href="./leaderboard.html">Leaderboard</a></li>
+                    <li><a href="./about.html">About Us</a></li>
+                </ul>
+            </div>
+            <a class="icon-btn active" href="./account.html" aria-label="Your account" data-tip="Account" aria-current="page"><i class="fa-solid fa-user" aria-hidden="true"></i></a>
+            <a class="icon-btn" href="./calendar.html" aria-label="Class Calendar" data-tip="Class Calendar"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></a>
+            <button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" data-tip="Light / dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <main class="legalMain">
+        <div class="legal-card acct">
+            <h1>Your Account</h1>
+            <p class="updated" id="acctSub">Sign in with a one-time code. No password needed.</p>
+
+            <!-- Loading -->
+            <section id="stLoading" class="acct-state"><p class="muted">Loading…</p></section>
+
+            <!-- Accounts switched off -->
+            <section id="stOff" class="acct-state" hidden>
+                <p>Accounts are coming soon. You can still play as a guest.</p>
+                <a class="play-now play-now--sm" href="./play.html?diff=easy&rounds=5">Play now</a>
+            </section>
+
+            <!-- Sign in: email, then code -->
+            <section id="stSignIn" class="acct-state" hidden>
+                <form id="emailForm" class="acct-form">
+                    <label for="email">Email</label>
+                    <input id="email" type="email" autocomplete="email" required placeholder="you@example.com">
+                    <button type="submit" class="primary-btn" id="emailBtn">Email me a code</button>
+                    <p class="hint">New here? The same code creates your account. If you've been playing as a guest, your games come with you.</p>
+                </form>
+                <form id="codeForm" class="acct-form" hidden>
+                    <label for="code">6-digit code sent to <strong id="codeEmail"></strong></label>
+                    <input id="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required placeholder="123456">
+                    <button type="submit" class="primary-btn" id="codeBtn">Sign in</button>
+                    <p class="hint"><button type="button" class="link-btn" id="changeEmail">Use a different email</button> · Codes can take a minute to arrive. Check your junk folder.</p>
+                </form>
+            </section>
+
+            <!-- Choose a username -->
+            <section id="stUsername" class="acct-state" hidden>
+                <form id="nameForm" class="acct-form">
+                    <label for="username">Pick a username</label>
+                    <input id="username" autocomplete="off" required minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" placeholder="BillyTheBison">
+                    <p class="hint" id="nameHint">3–20 letters, numbers or underscores. This is shown on the leaderboard.</p>
+                    <button type="submit" class="primary-btn" id="nameBtn">Save username</button>
+                </form>
+            </section>
+
+            <!-- Signed in -->
+            <section id="stAccount" class="acct-state" hidden>
+                <div class="acct-head">
+                    <div>
+                        <p class="acct-name" id="acctName"></p>
+                        <p class="muted" id="acctEmail"></p>
+                    </div>
+                    <span class="badge" id="umBadge" hidden><i class="fa-solid fa-circle-check"></i> UM verified</span>
+                </div>
+
+                <div class="acct-panel" id="umPanel">
+                    <h2>Join the ranked leaderboard</h2>
+                    <p>Ranked games are for the UManitoba community. Verify a <strong>@myumanitoba.ca</strong> or <strong>@umanitoba.ca</strong> email. We only use it to send one code, and we don't store the address.</p>
+                    <form id="umEmailForm" class="acct-form">
+                        <label for="umEmail">University email</label>
+                        <input id="umEmail" type="email" required placeholder="umnetid@myumanitoba.ca">
+                        <button type="submit" class="secondary-btn" id="umEmailBtn">Send verification code</button>
+                    </form>
+                    <form id="umCodeForm" class="acct-form" hidden>
+                        <label for="umCode">Code from your university inbox</label>
+                        <input id="umCode" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required placeholder="123456">
+                        <button type="submit" class="secondary-btn" id="umCodeBtn">Verify</button>
+                    </form>
+                </div>
+
+                <div class="acct-panel">
+                    <h2>Your best scores</h2>
+                    <div id="bests"><p class="muted">No finished games yet.</p></div>
+                    <p class="acct-links"><a class="primary-btn" href="./play.html?diff=easy&rounds=5">Play</a> <a class="neutral-btn" href="./leaderboard.html">Leaderboard</a></p>
+                </div>
+
+                <div class="acct-panel">
+                    <h2>Username</h2>
+                    <form id="renameForm" class="acct-form acct-inline">
+                        <input id="rename" autocomplete="off" required minlength="3" maxlength="20" pattern="[A-Za-z0-9_]{3,20}" aria-label="New username">
+                        <button type="submit" class="neutral-btn">Change</button>
+                    </form>
+                    <p class="hint" id="renameHint"></p>
+                </div>
+
+                <div class="acct-actions">
+                    <button type="button" class="neutral-btn" id="signOutBtn">Sign out</button>
+                </div>
+
+                <div class="acct-panel danger">
+                    <h2>Delete account</h2>
+                    <p>Deletes your account, username, games, scores and university verification right away. This can't be undone.</p>
+                    <button type="button" class="danger-btn" id="deleteStart">Delete my account</button>
+                    <form id="deleteForm" class="acct-form" hidden>
+                        <label for="deleteCode">To confirm, enter the code we just emailed you</label>
+                        <input id="deleteCode" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required placeholder="123456">
+                        <button type="submit" class="danger-btn" id="deleteBtn">Permanently delete</button>
+                    </form>
+                </div>
+            </section>
+
+            <p class="acct-msg" id="msg" role="status" aria-live="polite"></p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-bottom" style="margin-top:0;border-top:none;padding-top:0">
+                <nav class="footer-links" aria-label="Site pages"><a href="./index.html">Home</a><a href="./how-to-play.html">How to Play</a><a href="./leaderboard.html">Leaderboard</a><a href="./calendar.html">Class Calendar</a><a href="./about.html">About &amp; FAQ</a><a href="./privacy.html">Privacy Policy</a><a href="mailto:umanitobaguesser@gmail.com">Contact</a></nav>
+                <p>&copy; 2026 UManitoba Guesser | Built by Bisons for Bisons 🦬</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+        }
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = document.documentElement.classList.contains('dark-mode') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateThemeIcon);
+    </script>
+    <script src="./static/config.js"></script>
+    <script src="./static/api.js"></script>
+    <script src="./static/account.js"></script>
+    <script src="./static/nav.js"></script>
+</body>
+</html>
