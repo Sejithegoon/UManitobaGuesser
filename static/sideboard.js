@@ -12,13 +12,32 @@
     const roundsParam = params.get('rounds');
     const unlimited = roundsParam === 'unlimited';
     const rounds = [5, 10, 20].includes(Number(roundsParam)) ? Number(roundsParam) : 5;
+    const daily = params.get('mode') === 'daily';
     let loaded = false;
 
     const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const medal = (n) => ({ 1: '🥇', 2: '🥈', 3: '🥉' }[n] || n + '.');
 
+    // Daily Challenge: today's board instead of a ranked one
+    async function loadDaily() {
+        const list = document.getElementById('sbList');
+        document.getElementById('sbTitle').textContent = 'Today’s Daily';
+        document.querySelector('.sb-more').href = './leaderboard.html?board=daily';
+        try {
+            const [s, rows] = await Promise.all([api.dailyStatus(), api.dailyLeaderboard()]);
+            document.getElementById('sbMode').textContent = `Daily #${s.number} · ${Number(s.players).toLocaleString()} played today`;
+            list.innerHTML = rows && rows.length
+                ? rows.slice(0, 10).map(r =>
+                    `<li${r.is_me ? ' class="me"' : ''}><span class="sb-rank">${medal(Number(r.rank))}</span><span class="sb-name">${esc(r.username)}</span><span class="sb-score">${Number(r.score).toLocaleString()}</span></li>`).join('')
+                : '<li class="sb-empty">No one has finished today’s challenge yet. Make an account to get your name up here!</li>';
+        } catch (e) {
+            list.innerHTML = '<li class="sb-empty">Leaderboard unavailable right now.</li>';
+        }
+    }
+
     async function load() {
         loaded = true;
+        if (daily) { loadDaily(); return; }
         document.getElementById('sbMode').textContent =
             `${difficulty[0].toUpperCase()}${difficulty.slice(1)} · ${rounds} rounds · all time`;
         const list = document.getElementById('sbList');

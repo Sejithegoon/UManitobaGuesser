@@ -89,9 +89,17 @@ h1 {
 .hero-cta { margin-top: 6px; }
 .hero-cta .play-now { font-size: 2.5rem; }
 
-/* All-time counters (filled by presence.js) */
-.stats-strip { margin: -10px 0 0; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); }
-.stats-strip[hidden] { display: none; }
+/* Live + all-time counters (filled by presence.js) */
+.stat-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: -4px; }
+.stat-chips[hidden] { display: none; }
+.stat-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 12px; border-radius: var(--radius-pill);
+    font-size: 0.85rem; font-weight: 600; color: var(--text-muted);
+    background: var(--surface); border: 2px solid var(--line);
+}
+.stat-chip i { color: var(--secondary-color); font-size: 0.8rem; }
+.stat-chip:has(> .sv:empty) { display: none; }
 
 /* Daily Challenge + Play with Friends */
 .mode-cards { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -103,7 +111,13 @@ h1 {
 }
 .mode-card:hover { transform: translateY(-2px); border-color: var(--secondary-color); }
 .mode-card:focus-visible { outline: 3px solid var(--secondary-color); outline-offset: 2px; }
-.mode-icon { font-size: 1.7rem; line-height: 1; }
+.mode-icon {
+    flex: 0 0 auto; display: grid; place-items: center;
+    width: 42px; height: 42px; border-radius: 12px;
+    font-size: 1.15rem; color: #fff; background: var(--primary-color);
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.18);
+}
+.mode-icon.daily { background: var(--secondary-color); color: #1a1300; }
 .mode-text { display: flex; flex-direction: column; gap: 3px; font-size: 0.9rem; line-height: 1.4; }
 .mode-text strong { color: var(--heading); font-size: 1rem; }
 .mode-text small { color: var(--text-muted); font-weight: 600; }

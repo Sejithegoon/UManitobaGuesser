@@ -53,8 +53,13 @@
             </div>
             <h1>UManitoba Guesser</h1>
             <p class="tagline">How well do you know the Fort Garry campus?</p>
-            <p class="live-strip" data-live hidden><span class="live-dot" aria-hidden="true"></span><span data-online></span> · <span data-registered></span></p>
-            <p class="stats-strip" data-live hidden><span aria-hidden="true">👀</span> <span data-visits></span> · <span aria-hidden="true">🎮</span> <span data-games></span></p>
+            <!-- Live + all-time numbers (filled by presence.js; empty chips stay hidden) -->
+            <div class="stat-chips" data-live hidden>
+                <span class="stat-chip"><span class="live-dot" aria-hidden="true"></span><span class="sv" data-online data-short></span></span>
+                <span class="stat-chip"><i class="fa-solid fa-user-check" aria-hidden="true"></i><span class="sv" data-registered data-short title="Registered players"></span></span>
+                <span class="stat-chip"><i class="fa-solid fa-eye" aria-hidden="true"></i><span class="sv" data-visits></span></span>
+                <span class="stat-chip"><i class="fa-solid fa-gamepad" aria-hidden="true"></i><span class="sv" data-games data-short title="Games played"></span></span>
+            </div>
 
             <div class="gameOptions">
                 <h3>Select Difficulty</h3>
@@ -82,7 +87,7 @@
             <!-- More ways to play -->
             <div class="mode-cards">
                 <a class="mode-card" href="./play.html?mode=daily">
-                    <span class="mode-icon" aria-hidden="true">📅</span>
+                    <span class="mode-icon daily" aria-hidden="true"><i class="fa-solid fa-calendar-day"></i></span>
                     <span class="mode-text">
                         <strong>Daily Challenge <span class="mode-tag" data-daily></span></strong>
                         <span>Same 5 photos for everyone. One try a day.</span>
@@ -90,7 +95,7 @@
                     </span>
                 </a>
                 <a class="mode-card" href="./lobby.html">
-                    <span class="mode-icon" aria-hidden="true">👥</span>
+                    <span class="mode-icon friends" aria-hidden="true"><i class="fa-solid fa-user-group"></i></span>
                     <span class="mode-text">
                         <strong>Play with Friends <span class="mode-tag new">New</span></strong>
                         <span>Make a lobby, share the code, race your friends live. Party or Duels.</span>

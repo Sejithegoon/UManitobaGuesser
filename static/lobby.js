@@ -303,7 +303,7 @@
 
         const needTwo = L0.mode === 'duels' && players.length < 2;
         $('startBtn').hidden = !host;
-        $('startBtn').disabled = needTwo || busy;
+        $('startBtn').disabled = needTwo;   // a click while a request is running is ignored by the handler
         $('waitNote').textContent = host
             ? (needTwo ? 'Duels need at least 2 players. Share the code!' : players.length < 2 ? 'Share the code with your friends, then press Start.' : 'Everyone in? Press Start.')
             : 'Waiting for the host to start the game…';
@@ -585,22 +585,24 @@
         const r = st.round;
         const byRound = {};
         if (r && r.resolved && r.guesses) r.guesses.forEach(g => { byRound[g.seat] = g; });
+        // Two lines per player: name + total, then this round's status (and HP bar in Duels)
         const list = standings().map((p, i) => {
+            const out = isDuels() && p.hp <= 0;
             let status = '';
-            if (r && !r.resolved) status = p.guessed ? '<span class="ls-st ok" title="Guessed">✓</span>' : '<span class="ls-st wait" title="Still guessing">…</span>';
+            if (out) status = '<span class="ls-st out">Knocked out</span>';
+            else if (r && !r.resolved) status = p.guessed ? '<span class="ls-st ok">✓ Guessed</span>' : `<span class="ls-st wait">${p.away ? 'Away' : 'Guessing…'}</span>`;
             else if (byRound[p.seat]) {
                 const g = byRound[p.seat];
                 status = isDuels()
-                    ? `<span class="ls-st ${g.damage ? 'hit' : 'ok'}">${g.damage ? '−' + g.damage.toLocaleString() : '✓'}</span>`
-                    : `<span class="ls-st ok">+${g.score.toLocaleString()}</span>`;
+                    ? `<span class="ls-st ${g.damage ? 'hit' : 'ok'}">${g.damage ? '−' + g.damage.toLocaleString() + ' HP' : 'Round winner'}</span>`
+                    : `<span class="ls-st ok">+${g.score.toLocaleString()} this round</span>`;
             }
-            const out = isDuels() && p.hp <= 0;
-            const right = isDuels()
-                ? `<span class="ls-hp" title="${p.hp.toLocaleString()} HP"><span style="width:${Math.max(0, p.hp / st.lobby.max_hp * 100)}%"></span></span><span class="ls-num">${p.hp.toLocaleString()}</span>`
-                : `<span class="ls-num">${p.total_score.toLocaleString()}</span>`;
-            return `<li class="${p.seat === st.me ? 'me' : ''}${out ? ' out' : ''}${p.away ? ' away' : ''}" style="--pin:${Pins.color(p.color)}">` +
+            const hp = isDuels()
+                ? `<span class="ls-hp" title="${p.hp.toLocaleString()} HP"><span style="width:${Math.max(0, p.hp / st.lobby.max_hp * 100)}%"></span></span>` : '';
+            return `<li class="${p.seat === st.me ? 'me' : ''}${out ? ' out' : ''}" style="--pin:${Pins.color(p.color)}">` +
                    `<span class="ls-rank">${i + 1}</span><span class="lp-dot" aria-hidden="true"></span>` +
-                   `<span class="ls-name">${esc(p.nickname)}${p.is_host ? ' 👑' : ''}</span>${status}${right}</li>`;
+                   `<span class="ls-main"><span class="ls-name">${esc(p.nickname)}${p.is_host ? ' <span title="Host">👑</span>' : ''}</span>${status}${hp}</span>` +
+                   `<span class="ls-num">${(isDuels() ? p.hp : p.total_score).toLocaleString()}</span></li>`;
         });
         $('gamePlayers').innerHTML = list.join('');
         $('sideTitle').textContent = isDuels() ? 'Health' : 'Scoreboard';
@@ -625,7 +627,9 @@
         $('timer').textContent = r.resolved
             ? (st.lobby.status === 'playing' && clock.next ? `Next in ${Math.max(0, Math.ceil((clock.next - t) / 1000))}s` : 'Round over')
             : `${secs}s`;
-        $('timerBar').style.width = `${(rem / limitMs) * 100}%`;
+        // During the reveal the bar drains toward the next round instead
+        const nextLeft = r.resolved && st.lobby.status === 'playing' && clock.next ? Math.max(0, clock.next - t) : null;
+        $('timerBar').style.width = `${nextLeft !== null ? Math.min(100, nextLeft / 9000 * 100) : (rem / limitMs) * 100}%`;
         $('timerWrap').classList.toggle('low', !r.resolved && !counting && secs <= 5);
 
         // A placed pin locks itself in just before time runs out

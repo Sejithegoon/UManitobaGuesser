@@ -5,7 +5,8 @@
     const $ = (id) => document.getElementById(id);
     const filter = { board: 'ranked', difficulty: 'easy', rounds: 5, period: 'all' };
     const RANKED_NOTE = 'Best ranked game per player. Only UM-verified accounts compete.';
-    const DAILY_NOTE = 'Same 5 photos for everyone today. Players with an account are listed; resets at midnight (Winnipeg).';
+    const CTA_RANKED = document.querySelector('#lbCta p').innerHTML;
+    const DAILY_NOTE ='Same 5 photos for everyone today. Players with an account are listed; resets at midnight (Winnipeg).';
 
     function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
     function when(ts) { return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); }
@@ -70,6 +71,10 @@
         const daily = b.dataset.v === 'daily';
         $('rankedFilters').hidden = daily;
         document.querySelector('.lb .updated').textContent = daily ? DAILY_NOTE : RANKED_NOTE;
+        // The sign-up prompt matches the board: daily needs an account, ranked needs UM verification
+        $('lbCta').querySelector('p').innerHTML = daily
+            ? 'Create a free account and pick a username. Your Daily Challenge scores then show up here every day.'
+            : CTA_RANKED;
     });
     wire('fBoard', 'board');
     if (new URLSearchParams(location.search).get('board') === 'daily') $('fBoard').querySelector('[data-v="daily"]').click();

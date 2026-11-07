@@ -168,32 +168,32 @@
 }
 .lobby-side h2 { font-size: 1.9rem; color: var(--heading); line-height: 1; }
 .lb-score { list-style: none; margin: 0 0 14px; padding: 0; }
+/* Each player: rank, colour, name over this round's status, total on the right */
 .lb-score li {
     display: grid;
-    grid-template-columns: 18px 14px 1fr auto auto;
+    grid-template-columns: 18px 14px minmax(0, 1fr) auto;
     align-items: center;
-    gap: 8px;
-    padding: 9px 6px;
+    gap: 10px;
+    padding: 10px 8px;
     border-bottom: 1px solid var(--line);
-    font-size: 0.95rem;
     transition: background 0.2s;
 }
 .lb-score li:last-child { border-bottom: none; }
-.lb-score li.me { background: rgba(230, 161, 11, 0.14); border-radius: 8px; }
-.lb-score li.out { opacity: 0.5; }
+.lb-score li.me { background: rgba(230, 161, 11, 0.14); border-radius: 10px; border-bottom-color: transparent; }
+.lb-score li.out { opacity: 0.55; }
 .lb-score li.out .ls-name { text-decoration: line-through; }
-.lb-score li.away .ls-name::after { content: " (away)"; color: var(--text-muted); font-weight: 400; font-size: 0.8rem; }
 .ls-rank { font-weight: 700; color: var(--text-muted); text-align: center; }
-.ls-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ls-num { font-weight: 700; color: var(--heading); min-width: 46px; text-align: right; }
-.ls-st { font-size: 0.82rem; font-weight: 700; padding: 0 6px; border-radius: 999px; }
+.ls-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ls-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-main); }
+.ls-num { font: 400 1.35rem/1 "Bebas Neue", sans-serif; color: var(--heading); letter-spacing: 0.5px; }
+.ls-st { align-self: flex-start; font-size: 0.78rem; font-weight: 700; color: var(--text-muted); }
 .ls-st.ok { color: var(--success); }
-.ls-st.wait { color: var(--text-muted); animation: lbBlink 1.2s ease-in-out infinite; }
-@keyframes lbBlink { 50% { opacity: 0.3; } }
-.ls-st.hit { color: #fff; background: var(--danger); }
-.ls-hp { grid-column: 3 / 4; grid-row: 2; height: 7px; border-radius: 99px; background: var(--line-strong); overflow: hidden; }
+.ls-st.wait { animation: lbBlink 1.2s ease-in-out infinite; }
+@keyframes lbBlink { 50% { opacity: 0.35; } }
+.ls-st.hit { color: #fff; background: var(--danger); padding: 0 7px; border-radius: 999px; }
+.ls-st.out { color: var(--danger); }
+.ls-hp { height: 6px; border-radius: 99px; background: var(--line-strong); overflow: hidden; }
 .ls-hp span { display: block; height: 100%; background: var(--pin); transition: width 0.8s var(--ease-out); }
-.lb-score li:has(.ls-hp) { grid-template-rows: auto auto; row-gap: 4px; }
 
 /* Final standings */
 .lb-final li { grid-template-columns: 34px 1fr auto auto; }

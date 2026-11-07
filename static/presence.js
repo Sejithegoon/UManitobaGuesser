@@ -7,8 +7,9 @@
     const cfg = window.UMG_CONFIG || {};
     if (!api || cfg.presence === false) return;
 
-    const fill = (attr, text) => document.querySelectorAll(`[${attr}]`).forEach(el => {
-        el.textContent = text;
+    // Elements marked data-short (the home page chips) get the compact wording
+    const fill = (attr, text, short) => document.querySelectorAll(`[${attr}]`).forEach(el => {
+        el.textContent = short && el.hasAttribute('data-short') ? short : text;
         const wrap = el.closest('[data-live]');
         if (wrap) wrap.hidden = false;
     });
@@ -17,14 +18,14 @@
 
     function start() {
         api.watchOnline(({ online, playing: inGame }) => {
-            fill('data-online', fmt(online, 'player online', 'players online'));
+            fill('data-online', fmt(online, 'player online', 'players online'), fmt(online, 'online', 'online'));
             fill('data-playing', fmt(inGame, 'playing now', 'playing now'));
         }, playing).catch(() => { /* realtime unavailable: just stay hidden */ });
 
         api.siteStats().then(s => {
-            fill('data-registered', fmt(s.registered_players, 'registered player', 'registered players'));
+            fill('data-registered', fmt(s.registered_players, 'registered player', 'registered players'), fmt(s.registered_players, 'player', 'players'));
             if (s.total_visits != null) fill('data-visits', fmt(s.total_visits, 'visit', 'visits'));
-            if (s.games_played != null) fill('data-games', fmt(s.games_played, 'game played', 'games played'));
+            if (s.games_played != null) fill('data-games', fmt(s.games_played, 'game played', 'games played'), fmt(s.games_played, 'game', 'games'));
         }).catch(() => {});
         // Home page Daily Challenge card: today's number and how many have played
         if (document.querySelector('[data-daily]') && api.dailyStatus) {
@@ -32,7 +33,7 @@
                 fill('data-daily', `Daily #${d.number}`);
                 fill('data-daily-players', d.played
                     ? (d.my_score != null ? `You scored ${Number(d.my_score).toLocaleString()} today` : 'Already played today')
-                    : fmt(d.players, 'player today', 'players today'));
+                    : d.players ? fmt(d.players, 'player today', 'players today') : 'Be the first to play today!');
             }).catch(() => {});
         }
     }
