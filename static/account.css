@@ -42,6 +42,11 @@
 
 /* Leaderboard */
 .lb-filters { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 18px; }
+.lb-filters + .lb-filters { margin-top: -8px; }
+.lb-filters[hidden] { display: none; }
+.lb-daily-head { margin: 0 0 14px; color: var(--text-muted); }
+.lb-daily-head strong { color: var(--heading); }
+.lb-daily-head a { color: var(--heading); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 .seg-group { display: inline-flex; background: var(--surface); border: 2px solid var(--line); border-radius: var(--border-radius); padding: 3px; gap: 3px; }
 .seg-group button { background: transparent; color: var(--text-main); min-height: 38px; padding: 0 14px; font-size: 0.9rem; border-radius: 10px; }
 .seg-group button:hover { background: var(--line); }

@@ -89,6 +89,28 @@ h1 {
 .hero-cta { margin-top: 6px; }
 .hero-cta .play-now { font-size: 2.5rem; }
 
+/* All-time counters (filled by presence.js) */
+.stats-strip { margin: -10px 0 0; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); }
+.stats-strip[hidden] { display: none; }
+
+/* Daily Challenge + Play with Friends */
+.mode-cards { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mode-card {
+    display: flex; gap: 12px; align-items: flex-start; text-align: left;
+    padding: 14px 14px 16px; border-radius: var(--border-radius);
+    background: var(--surface); border: 2px solid var(--line); color: var(--text-main);
+    text-decoration: none; transition: transform 0.15s var(--ease-out), border-color 0.15s;
+}
+.mode-card:hover { transform: translateY(-2px); border-color: var(--secondary-color); }
+.mode-card:focus-visible { outline: 3px solid var(--secondary-color); outline-offset: 2px; }
+.mode-icon { font-size: 1.7rem; line-height: 1; }
+.mode-text { display: flex; flex-direction: column; gap: 3px; font-size: 0.9rem; line-height: 1.4; }
+.mode-text strong { color: var(--heading); font-size: 1rem; }
+.mode-text small { color: var(--text-muted); font-weight: 600; }
+.mode-text small:empty, .mode-tag:empty { display: none; }
+.mode-tag { display: inline-block; margin-left: 4px; padding: 0 7px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; vertical-align: 2px; background: var(--line-strong); color: var(--heading); }
+.mode-tag.new { background: var(--secondary-color); color: #1a1300; }
+
 /* How to play */
 .howto { max-width: 960px; margin: 0 auto; padding: 20px 20px 0; text-align: center; }
 .howto h2 { font-size: 2.6rem; color: var(--heading); margin-bottom: 22px; }
@@ -123,6 +145,7 @@ h1 {
     .options button { min-width: 0; padding: 0 6px; }
     .hero-cta { width: 100%; }
     .hero-cta .play-now { width: 100%; font-size: 2.2rem; }
+    .mode-cards { grid-template-columns: 1fr; }
     .howto { padding: 10px 16px 0; }
     .howto h2 { font-size: 2.2rem; }
 }

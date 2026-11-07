@@ -13,7 +13,7 @@ Prepare (safe, local only):
 Publish (needs: git push access, and `npx supabase@latest login` + `link` done once):
   4. git add + commit + push the photo and location files
   5. wait until umanitobaguesser.ca serves the new photo copies
-  6. run both SQL files on the linked Supabase project (`supabase db query --linked`)
+  6. run both SQL files on the linked Supabase project (`supabase db query --remote`)
 
 Exit code 0 = everything succeeded. Used by the Discord bot.
 """
@@ -41,7 +41,11 @@ SEED = ROOT / 'supabase' / 'seed'
 LOC_SQL = SEED / 'locations.local.sql'
 KEYS_SQL = SEED / 'photo_keys.local.sql'
 KEYS_JSON = SEED / 'photo_keys.local.json'
-PUBLISH_PATHS = ['locations/IMG', 'locations/locations.json', 'locations/p']
+# Only the renamed photos are published. locations.json and IMG/ hold the answers:
+# they stay on this computer (git-ignored) and never go on the website.
+PUBLISH_PATHS = ['locations/p']
+# Pinned: the CLI's flags changed in 3.0 (--linked -> --remote, writes need --yes)
+SUPABASE_CLI = 'supabase@3.0.0'
 
 
 def step(msg):
@@ -104,7 +108,8 @@ def apply_sql():
         raise SystemExit('✗ npx (Node.js) not found.')
     for f in (LOC_SQL, KEYS_SQL):
         step(f'Updating the database: {f.name}')
-        r = run([npx, '--yes', 'supabase@latest', 'db', 'query', '--linked', '-f', str(f)], check=False)
+        # --yes: running with --publish is the go-ahead to change the live database
+        r = run([npx, '--yes', SUPABASE_CLI, 'db', 'query', '--remote', '--yes', '-f', str(f)], check=False)
         out = (r.stdout + r.stderr)
         if r.returncode != 0 or 'ERROR' in out:
             raise SystemExit(f'✗ Database update failed:\n{out.strip()[-1500:]}')

@@ -23,7 +23,18 @@
 
         api.siteStats().then(s => {
             fill('data-registered', fmt(s.registered_players, 'registered player', 'registered players'));
+            if (s.total_visits != null) fill('data-visits', fmt(s.total_visits, 'visit', 'visits'));
+            if (s.games_played != null) fill('data-games', fmt(s.games_played, 'game played', 'games played'));
         }).catch(() => {});
+        // Home page Daily Challenge card: today's number and how many have played
+        if (document.querySelector('[data-daily]') && api.dailyStatus) {
+            api.dailyStatus().then(d => {
+                fill('data-daily', `Daily #${d.number}`);
+                fill('data-daily-players', d.played
+                    ? (d.my_score != null ? `You scored ${Number(d.my_score).toLocaleString()} today` : 'Already played today')
+                    : fmt(d.players, 'player today', 'players today'));
+            }).catch(() => {});
+        }
     }
 
     // Don't compete with the page's first paint

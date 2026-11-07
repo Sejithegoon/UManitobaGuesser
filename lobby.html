@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play with Friends | UManitoba Guesser</title>
+    <meta name="description" content="Play UManitoba Guesser live with your friends: make a lobby, share the code, and race to pin campus photos. Party or Duels mode.">
+    <meta name="theme-color" content="#0b3b75">
+    <meta property="og:title" content="Play UManitoba Guesser with friends">
+    <meta property="og:description" content="Join my lobby and see who knows the U of M campus best.">
+    <meta property="og:image" content="https://umanitobaguesser.ca/assets/logo-main.png">
+    <meta property="og:type" content="website">
+    <link rel="shortcut icon" href="./assets/logo-main.webp" type="image/x-icon">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="./static/main.css">
+    <link rel="stylesheet" href="./static/play.css">
+    <link rel="stylesheet" href="./static/lobby.css">
+    <script src="https://kit.fontawesome.com/edb895a006.js" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-7269426922041265">
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
+</head>
+<body data-page="play">
+    <nav class="nav" id="siteNav">
+        <div class="logo">
+            <a href="./"><img src="./assets/logo-main.webp" alt="UManitoba Guesser home"></a>
+        </div>
+        <div class="nav-right">
+            <div class="links" id="navLinks">
+                <ul>
+                    <li><a href="./">Home</a></li>
+                    <li class="nav-play"><a class="nav-play-btn" href="./play.html?diff=easy&rounds=5">Play</a></li>
+                    <li><a href="./lobby.html" class="active" aria-current="page">Friends</a></li>
+                    <li><a href="./leaderboard.html">Leaderboard</a></li>
+                    <li><a href="./about.html">About Us</a></li>
+                </ul>
+            </div>
+            <button type="button" class="theme-toggle sound-toggle" id="soundToggle" aria-label="Toggle sound" data-tip="Mute sound"><i id="soundIcon" class="fa-solid fa-volume-high"></i></button>
+            <a class="icon-btn" href="./account.html" aria-label="Your account" data-tip="Account"><i class="fa-solid fa-user" aria-hidden="true"></i></a>
+            <a class="icon-btn" href="./calendar.html" aria-label="Class Calendar" data-tip="Class Calendar"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></a>
+            <button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" data-tip="Light / dark mode"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <div class="main lobby-main">
+        <!-- 1. Create or join -->
+        <section class="lobby-card" id="lbEntry" aria-labelledby="lbTitle">
+            <h1 id="lbTitle">Play with Friends</h1>
+            <p class="lb-tagline">Make a lobby, share the code, and find out who really knows campus.</p>
+
+            <label class="lb-field" for="nickInput">Your nickname</label>
+            <input id="nickInput" class="lb-input" maxlength="16" autocomplete="nickname" placeholder="e.g. TunnelRat" spellcheck="false">
+
+            <div class="lobby-split">
+                <div class="lb-box">
+                    <h2>Start a lobby</h2>
+                    <div class="seg" id="createMode" role="group" aria-label="Game mode">
+                        <button type="button" data-v="party" class="selected" aria-pressed="true">🎉 Party</button>
+                        <button type="button" data-v="duels" aria-pressed="false">⚔️ Duels</button>
+                    </div>
+                    <p class="lb-help" id="createHelp">Everyone plays the same photos. Highest total wins.</p>
+                    <button type="button" id="createBtn" class="primary-btn">Create lobby</button>
+                </div>
+                <div class="lb-box">
+                    <h2>Join a lobby</h2>
+                    <input id="codeInput" class="lb-input code-input" maxlength="6" placeholder="CODE" autocapitalize="characters" autocomplete="off" spellcheck="false" aria-label="Lobby code">
+                    <p class="lb-help">Ask the host for their 6-letter code.</p>
+                    <button type="button" id="joinBtn" class="secondary-btn">Join</button>
+                </div>
+            </div>
+            <p class="lb-error" id="entryError" role="alert" hidden></p>
+            <p class="lb-foot">No account needed. Lobby games don't count toward the ranked leaderboard.</p>
+        </section>
+
+        <!-- 2. Waiting room -->
+        <section class="lobby-card" id="lbWait" aria-labelledby="waitTitle" hidden>
+            <p class="lb-kicker" id="waitTitle">Lobby code</p>
+            <button type="button" class="code-big" id="codeBig" aria-label="Copy invite link"></button>
+            <button type="button" id="copyLinkBtn" class="neutral-btn lb-copy"><i class="fa-solid fa-link" aria-hidden="true"></i> Copy invite link</button>
+
+            <h2 class="lb-sub">Players <span class="lb-count" id="playerCount"></span></h2>
+            <ul class="lb-players" id="waitPlayers"></ul>
+
+            <div class="lb-settings" id="settingsBox">
+                <div class="lb-setting">
+                    <span>Mode</span>
+                    <div class="seg" id="setMode" role="group" aria-label="Game mode">
+                        <button type="button" data-v="party">🎉 Party</button>
+                        <button type="button" data-v="duels">⚔️ Duels</button>
+                    </div>
+                </div>
+                <div class="lb-setting">
+                    <span>Timer</span>
+                    <div class="seg" id="setDiff" role="group" aria-label="Difficulty">
+                        <button type="button" data-v="easy">30s</button>
+                        <button type="button" data-v="medium">20s</button>
+                        <button type="button" data-v="hard">8s</button>
+                    </div>
+                </div>
+                <div class="lb-setting" id="roundsSetting">
+                    <span>Rounds</span>
+                    <div class="seg" id="setRounds" role="group" aria-label="Rounds">
+                        <button type="button" data-v="3">3</button>
+                        <button type="button" data-v="5">5</button>
+                        <button type="button" data-v="10">10</button>
+                    </div>
+                </div>
+                <p class="lb-help" id="modeHelp"></p>
+            </div>
+
+            <p class="lb-note" id="waitNote"></p>
+            <div class="lb-actions">
+                <button type="button" id="startBtn" class="primary-btn">Start game</button>
+                <button type="button" id="leaveBtn" class="neutral-btn">Leave</button>
+            </div>
+            <p class="lb-error" id="waitError" role="alert" hidden></p>
+        </section>
+
+        <!-- 3. The game -->
+        <div class="lobby-game" id="lbGame" hidden>
+            <div class="game-card">
+                <h1 id="roundHeader">ROUND 1</h1>
+
+                <div class="timer-wrap" id="timerWrap">
+                    <h3 id="timer">--</h3>
+                    <div class="timer-track"><div class="timer-bar" id="timerBar"></div></div>
+                </div>
+
+                <div class="gameLocation" id="gameLocation">
+                    <div class="photo-wrap loading" id="photoWrap">
+                        <img id="locationImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Campus location to guess" draggable="false">
+                        <div class="magnifier-lens" id="magLens" aria-hidden="true"></div>
+                        <div class="get-ready" id="getReady" hidden><span id="getReadyNum">3</span><small>Get ready</small></div>
+                        <div class="photo-tools">
+                            <button type="button" id="magToggle" class="tool-btn" aria-pressed="true" title="Toggle magnifier lens" aria-label="Toggle magnifier lens"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            <button type="button" id="expandBtn" class="tool-btn" title="Open full-size photo" aria-label="Open full-size photo"><i class="fa-solid fa-expand"></i></button>
+                        </div>
+                    </div>
+                    <p class="photo-hint" id="photoHint"></p>
+                </div>
+
+                <div id="photoViewer" class="viewer hidden" role="dialog" aria-modal="true" aria-label="Photo viewer">
+                    <div class="viewer-bar">
+                        <button type="button" class="tool-btn" id="vZoomOut" aria-label="Zoom out"><i class="fa-solid fa-minus"></i></button>
+                        <button type="button" class="tool-btn" id="vZoomIn" aria-label="Zoom in"><i class="fa-solid fa-plus"></i></button>
+                        <button type="button" class="tool-btn" id="vReset" aria-label="Reset zoom"><i class="fa-solid fa-rotate-left"></i></button>
+                        <button type="button" class="tool-btn" id="vClose" aria-label="Close viewer"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="viewer-stage" id="viewerStage">
+                        <img id="viewerImg" alt="Enlarged campus location" draggable="false">
+                    </div>
+                </div>
+
+                <div class="map-container">
+                    <div id="map"></div>
+                </div>
+
+                <div class="round-result hint" id="roundResult" aria-live="polite"></div>
+
+                <div class="game-ui">
+                    <div class="gameButtons">
+                        <button type="button" id="guessButton" class="primary-btn" disabled>Guess</button>
+                        <button type="button" id="nextButton" class="secondary-btn" hidden>Next round</button>
+                    </div>
+                    <div class="score-badge">
+                        <p id="score">Score: 0 🦬</p>
+                        <p id="scoreSub" class="best-score"></p>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="lobby-side" aria-labelledby="sideTitle">
+                <h2 id="sideTitle">Scoreboard</h2>
+                <p class="sb-mode" id="sideMode"></p>
+                <ol class="lb-score" id="gamePlayers"></ol>
+                <button type="button" id="leaveGameBtn" class="neutral-btn sb-more">Leave game</button>
+            </aside>
+        </div>
+    </div>
+
+    <!-- 4. Final standings -->
+    <div id="finalModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="finalTitle">
+        <div class="modalContent results-card">
+            <button type="button" id="closeFinal" class="modal-close" aria-label="Close results"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            <h2 id="finalTitle"></h2>
+            <p class="res-best" id="finalSub"></p>
+            <ol class="res-list lb-final" id="finalList"></ol>
+            <div id="finalMap" class="res-map" aria-label="Map of every guess and answer"></div>
+            <div class="res-actions">
+                <button type="button" id="againBtn" class="primary-btn">Play again</button>
+                <button type="button" id="shareBtn" class="secondary-btn">Share</button>
+            </div>
+            <button type="button" id="finalLeaveBtn" class="res-home lb-linkbtn">Leave lobby</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="cord">
+                <h3>Join the Community 🌐</h3>
+                <p>Connect via Discord to get the latest updates on <strong>UManitoba Guesser</strong>.</p>
+                <div class="cta-row">
+                    <div class="discord-cta">
+                        <a class="discord-btn" href="https://discord.gg/s3Sta8cj5B"><i class='fab fa-discord'></i> Discord</a>
+                    </div>
+                    <div class="instagram-cta">
+                        <a class="instagram-btn" href="https://www.instagram.com/umanitobaguesser/" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i> Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <nav class="footer-links" aria-label="Site pages"><a href="./index.html">Home</a><a href="./how-to-play.html">How to Play</a><a href="./leaderboard.html">Leaderboard</a><a href="./calendar.html">Class Calendar</a><a href="./about.html">About &amp; FAQ</a><a href="./privacy.html">Privacy Policy</a><a href="mailto:umanitobaguesser@gmail.com">Contact</a></nav>
+                <p>&copy; 2026 UManitoba Guesser | Built by Bisons for Bisons 🦬</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="./static/pins.js"></script>
+    <script src="./static/sounds.js"></script>
+    <script src="./static/config.js"></script>
+    <script src="./static/visit.js"></script>
+    <script src="./static/api.js"></script>
+    <script src="./static/lobby.js"></script>
+    <script src="./static/magnifier.js"></script>
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+        }
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            if (icon) {
+                icon.className = document.documentElement.classList.contains('dark-mode') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', updateThemeIcon);
+    </script>
+    <script src="./static/nav.js"></script>
+</body>
+</html>

@@ -13,3 +13,13 @@ supabase/.branches/
 supabase/seed/*.local.sql
 supabase/tests/.harness/
 supabase/seed/*.local.json
+
+# Location answer key: names + exact coordinates and the original named photos.
+# Kept on this computer for the sync script and the Discord bot; never published.
+# (The site only serves the renamed copies in locations/p/.)
+locations/locations.json
+locations/IMG/
+
+# Instagram / launch video renders
+brag-output/
+__pycache__/

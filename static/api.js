@@ -218,6 +218,32 @@
         leaderboard: async (difficulty, rounds, period) =>
             rpc('leaderboard', { p_difficulty: difficulty, p_rounds: rounds, p_period: period }, await baseClient()),
         siteStats: async () => rpc('site_stats', {}, await baseClient()),
+        // Daily Challenge: same 5 photos for everyone today; then the normal game RPCs
+        dailyStart: () => rpc('daily_start', {}),
+        dailyStatus: async () => rpc('daily_status', {}, await baseClient()),
+        dailyLeaderboard: async (day) => rpc('daily_leaderboard', day ? { p_day: day } : {}, await baseClient()),
+        // Friend lobbies (static/lobby.js). Guests play with a nickname.
+        lobby: {
+            create: (nickname, mode, difficulty, rounds) =>
+                rpc('lobby_create', { p_nickname: nickname, p_mode: mode, p_difficulty: difficulty, p_rounds: rounds }),
+            join: (code, nickname) => rpc('lobby_join', { p_code: code, p_nickname: nickname }),
+            state: (id) => rpc('lobby_state', { p_lobby: id }),
+            settings: (id, mode, difficulty, rounds) =>
+                rpc('lobby_settings', { p_lobby: id, p_mode: mode, p_difficulty: difficulty, p_rounds: rounds }),
+            start: (id) => rpc('lobby_start', { p_lobby: id }),
+            guess: (id, lat, lng) => rpc('lobby_guess', { p_lobby: id, p_lat: lat, p_lng: lng }),
+            next: (id) => rpc('lobby_next', { p_lobby: id }),
+            reset: (id) => rpc('lobby_reset', { p_lobby: id }),
+            kick: (id, seat) => rpc('lobby_kick', { p_lobby: id, p_seat: seat }),
+            leave: (id) => rpc('lobby_leave', { p_lobby: id }),
+            // Instant "something changed" pings between players; the server state is the truth
+            async channel(code, onPing) {
+                const c = await client();
+                const ch = c.channel(`umg-lobby-${code}`, { config: { broadcast: { self: false } } });
+                ch.on('broadcast', { event: 'ping' }, () => onPing()).subscribe();
+                return { ping: () => ch.send({ type: 'broadcast', event: 'ping', payload: {} }), close: () => c.removeChannel(ch) };
+            }
+        },
         // Live "players online": Supabase Realtime presence. Anonymous (no names);
         // each open tab counts once. Calls onCount(n) whenever it changes.
         async watchOnline(onCount, playing) {

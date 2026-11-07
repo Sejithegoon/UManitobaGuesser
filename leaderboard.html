@@ -27,6 +27,7 @@
                 <ul>
                     <li><a href="./">Home</a></li>
                     <li class="nav-play"><a class="nav-play-btn" href="./play.html?diff=easy&rounds=5">Play</a></li>
+                    <li><a href="./lobby.html">Friends</a></li>
                     <li><a href="./leaderboard.html" class="active" aria-current="page">Leaderboard</a></li>
                     <li><a href="./about.html">About Us</a></li>
                 </ul>
@@ -45,6 +46,11 @@
             <p class="live-strip" data-live hidden><span class="live-dot" aria-hidden="true"></span><span data-online></span> · <span data-registered></span></p>
 
             <div class="lb-filters">
+                <div class="seg-group" role="group" aria-label="Board" id="fBoard">
+                    <button type="button" data-v="ranked" class="on">🏆 Ranked</button><button type="button" data-v="daily">📅 Daily Challenge</button>
+                </div>
+            </div>
+            <div class="lb-filters" id="rankedFilters">
                 <div class="seg-group" role="group" aria-label="Difficulty" id="fDiff">
                     <button type="button" data-v="easy" class="on">Easy</button><button type="button" data-v="medium">Medium</button><button type="button" data-v="hard">Hard</button>
                 </div>
@@ -91,6 +97,7 @@
         document.addEventListener('DOMContentLoaded', updateThemeIcon);
     </script>
     <script src="./static/config.js"></script>
+    <script src="./static/visit.js"></script>
     <script src="./static/api.js"></script>
     <script src="./static/leaderboard.js"></script>
     <script src="./static/presence.js"></script>

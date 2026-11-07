@@ -29,7 +29,8 @@ select is(
   (select coalesce(string_agg(p.proname, ', '), '')
      from pg_proc p join pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'EXECUTE')
-      and p.proname not in ('leaderboard', 'username_available', 'site_stats')),  -- read-only, public by design
+      and p.proname not in ('leaderboard', 'username_available', 'site_stats',          -- read-only, public by design
+                             'daily_status', 'daily_leaderboard', 'track_visit')),  -- track_visit only ever adds 1
   '', 'no privileged public function is callable without a session (except the public read-only ones)');
 
 select is(
@@ -37,7 +38,8 @@ select is(
      from information_schema.role_table_grants
     where table_schema = 'public' and grantee in ('anon', 'authenticated')
       and privilege_type in ('INSERT', 'UPDATE', 'DELETE', 'TRUNCATE')
-      and table_name in ('games', 'game_rounds', 'locations', 'reserved_usernames')),
+      and table_name in ('games', 'game_rounds', 'locations', 'reserved_usernames', 'daily_challenges',
+                         'lobbies', 'lobby_players', 'lobby_rounds', 'lobby_guesses')),
   '', 'no table-level write grants on game, answer or admin tables');
 
 select is(

@@ -11,7 +11,7 @@
     <meta property="og:image" content="https://umanitobaguesser.ca/assets/logo-main.png">
     <meta property="og:type" content="website">
     <link rel="shortcut icon" href="./assets/logo-main.webp" type="image/x-icon">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link rel="stylesheet" href="./static/main.css">
     <link rel="stylesheet" href="./static/play.css">
     <script src="https://kit.fontawesome.com/edb895a006.js" crossorigin="anonymous"></script>
@@ -32,6 +32,7 @@
                 <ul>
                     <li><a href="./">Home</a></li>
                     <li class="nav-play"><a class="nav-play-btn active" href="./play.html?diff=easy&rounds=5" aria-current="page">Play</a></li>
+                    <li><a href="./lobby.html">Friends</a></li>
                     <li><a href="./leaderboard.html">Leaderboard</a></li>
                     <li><a href="./about.html">About Us</a></li>
                 </ul>
@@ -123,6 +124,8 @@
             <p id="resNew" class="res-new" hidden>🎉 New personal best!</p>
             <div class="res-score"><span id="resScore">0</span><small id="resMax"></small></div>
             <p id="resBest" class="res-best"></p>
+            <p id="resDaily" class="res-daily" hidden></p>
+            <div id="resMap" class="res-map" aria-label="Map of your guesses and the answers"></div>
             <ol id="resList" class="res-list"></ol>
             <div class="res-actions">
                 <button id="shareBtn" class="primary-btn">Share</button>
@@ -153,9 +156,11 @@
         </div>
     </footer>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="./static/pins.js"></script>
     <script src="./static/sounds.js"></script>
     <script src="./static/config.js"></script>
+    <script src="./static/visit.js"></script>
     <script src="./static/api.js"></script>
     <script src="./static/game.js"></script>
     <script src="./static/magnifier.js"></script>

@@ -2,18 +2,19 @@
 
 // ---------- Config ----------
 const params = new URLSearchParams(window.location.search);
-const difficulty = ['easy', 'medium', 'hard'].includes(params.get('diff')) ? params.get('diff') : 'easy';
-const selectedRounds = params.get('rounds') || '5';
+const isDaily = params.get('mode') === 'daily';
+// The Daily Challenge is always 5 rounds on medium (the server enforces it)
+const difficulty = isDaily ? 'medium'
+    : ['easy', 'medium', 'hard'].includes(params.get('diff')) ? params.get('diff') : 'easy';
+const selectedRounds = isDaily ? '5' : params.get('rounds') || '5';
 const isUnlimited = selectedRounds === 'unlimited';
 
 const difficultySettings = { easy: 30, medium: 20, hard: 8 };
 const SITE_URL = 'https://umanitobaguesser.ca';
 const MAX_POINTS = 5000;      // per round
-const BULLSEYE_M = 10;        // within this distance = full points
-const FALLOFF_M = 200;        // score decays smoothly; ~200 m off loses about 63%
 const CAMPUS_CENTER = [49.80877091322333, -97.13230173125407];
 const CAMPUS_BOUNDS = L.latLngBounds([49.790, -97.170], [49.826, -97.095]);
-const BEST_KEY = `umg_best_${difficulty}_${selectedRounds}`;
+const BEST_KEY = isDaily ? 'umg_best_daily' : `umg_best_${difficulty}_${selectedRounds}`;
 const IS_TOUCH = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
 const TIERS = [
@@ -48,21 +49,12 @@ const map = L.map('map', {
     minZoom: 14
 }).setView(CAMPUS_CENTER, 17);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+const TILE_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTR }).addTo(map);
 
-function makePin(src, size) {
-    return L.divIcon({
-        className: 'pin-marker',
-        html: `<img src="${src}" alt="">`,
-        iconSize: [size, size],
-        iconAnchor: [size / 2, size / 2]
-    });
-}
-const pin = makePin('./assets/pin.svg', 28);
-const pin1 = makePin('./assets/pin3.webp', 32);
+const pin = window.UMGPins.guess(window.UMGPins.color(1));
+const pin1 = window.UMGPins.answer(32);
 
 // ---------- State ----------
 const gameState = {
@@ -73,8 +65,7 @@ const gameState = {
     isGuessed: false
 };
 
-let gamePool = [];
-let results = [];
+let results = [];          // { round, distance, score, guess: LatLng|null, answer: LatLng }
 let locationGuess = null;
 let targetMarker = null;
 let connectionLine = null;
@@ -85,9 +76,10 @@ let gameStarted = false;   // true once the rules popup has been closed
 let imageReady = false;    // true once the current photo has loaded
 let finished = false;
 let displayedScore = 0;
+let dailyNumber = null;
 
-// Server-run game (static/api.js). Off = classic in-browser game.
-let serverMode = !!(window.UMGApi && window.UMGApi.enabled);
+// Every game is run by the server (static/api.js): answers never reach the browser early
+const serverReady = !!(window.UMGApi && window.UMGApi.enabled);
 let serverGame = null;     // { id, round: { round_no, photo, time_limit_s } }
 let busy = false;          // a server request is in flight: ignore Guess/Next/Enter
 
@@ -98,23 +90,8 @@ function sfx(name, delay = 0) {
     else window.GameSounds.play(name);
 }
 
-function imgPath(name) { return `./locations/IMG/${name}.jpg`; }
-
 function formatDistance(m) {
     return m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(2)} km`;
-}
-
-function calcScore(distance) {
-    const d = Math.max(0, distance - BULLSEYE_M);
-    return Math.round(MAX_POINTS * Math.exp(-d / FALLOFF_M));
-}
-
-function shuffle(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
 }
 
 function getBest() { try { return parseInt(localStorage.getItem(BEST_KEY), 10) || 0; } catch (e) { return 0; } }
@@ -167,8 +144,8 @@ function hideFeedback() {
     modal.classList.add('hidden');
     if (!gameStarted) {
         gameStarted = true;
-        // Server mode: round 1 is only issued now, so reading the rules never uses round time
-        if (serverMode && !serverGame) loadGameData(setupRound);
+        // Round 1 is only issued now, so reading the rules never uses round time
+        if (!serverGame) loadGameData(setupRound);
         else tryStartTimer();
     }
 }
@@ -188,7 +165,7 @@ function displayGameRules() {
         ? 'Rounds: Unlimited (press End Game any time)'
         : `Rounds: ${gameState.maxRounds}  •  Max points: ${(gameState.maxRounds * MAX_POINTS).toLocaleString()}`;
     showFeedback(
-        `📜 How to play 📜\n\n` +
+        (isDaily ? `📅 Daily Challenge 📅\nSame 5 photos for everyone today. One try only!\n\n` : `📜 How to play 📜\n\n`) +
         `1️⃣ Study the photo (use 🔍 to zoom in)\n` +
         `2️⃣ ${IS_TOUCH ? 'Tap' : 'Click'} the map to drop your pin\n` +
         `3️⃣ Press Guess before time runs out\n` +
@@ -238,12 +215,11 @@ function startTimer(seconds) {
     }, 1000);
 }
 
-// Timer only starts once the rules are closed AND the photo has loaded
+// Timer only starts once the rules are closed AND the photo has loaded.
+// The server sets the real deadline when told the photo is showing.
 function tryStartTimer() {
     if (!(gameStarted && imageReady && !gameState.isGuessed && !timerRunning && !finished)) return;
-    if (!serverMode) { startTimer(); return; }
-    // Server mode: tell the server the photo is showing; it sets the real deadline
-    if (busy) return;
+    if (busy || !serverGame) return;
     busy = true;
     window.UMGApi.startRound(serverGame.id)
         .then(r => { busy = false; startTimer(Math.ceil(r.remaining_ms / 1000)); })
@@ -253,18 +229,14 @@ function tryStartTimer() {
 function handleTimeOut() {
     if (gameState.isGuessed) return;
     gameState.isGuessed = true;
-    if (serverMode) {
-        busy = true;
-        window.UMGApi.submit(serverGame.id, null, null)
-            .then(res => { busy = false; showTimeout(L.latLng(res.answer.lat, res.answer.lng), "⏰ Time's up!"); })
-            .catch(onServerError);
-        return;
-    }
-    showTimeout(currentTarget(), "⏰ Time's up!");
+    busy = true;
+    window.UMGApi.submit(serverGame.id, null, null)
+        .then(res => { busy = false; showTimeout(L.latLng(res.answer.lat, res.answer.lng), "⏰ Time's up!"); })
+        .catch(onServerError);
 }
 
 function showTimeout(target, title, detail = 'No points this round.') {
-    results.push({ round: gameState.currentRound, distance: null, score: 0 });
+    results.push({ round: gameState.currentRound, distance: null, score: 0, guess: null, answer: target });
 
     targetMarker = L.marker(target, { icon: pin1 }).addTo(map);
     map.flyTo(target, 18, { duration: 0.8 });
@@ -275,11 +247,6 @@ function showTimeout(target, title, detail = 'No points this round.') {
 }
 
 // ---------- Round flow ----------
-function currentTarget() {
-    const d = gamePool[gameState.currentRound - 1];
-    return L.latLng(d.cords[0], d.cords[1]);
-}
-
 function isLastRound() { return gameState.currentRound >= gameState.maxRounds; }
 
 function setGuessState(state) {
@@ -288,8 +255,13 @@ function setGuessState(state) {
     guessBtn.textContent = state === 'next' ? (isLastRound() ? 'See Results' : 'Next Round') : 'Guess';
 }
 
+function roundTitle() {
+    const n = isUnlimited ? `ROUND ${gameState.currentRound}` : `ROUND ${gameState.currentRound} / ${gameState.maxRounds}`;
+    return isDaily && dailyNumber ? `DAILY #${dailyNumber} · ${n}` : n;
+}
+
 function setupRound() {
-    const data = serverMode ? serverGame && serverGame.round : gamePool[gameState.currentRound - 1];
+    const data = serverGame && serverGame.round;
     if (!data) return;
 
     stopTimer();
@@ -299,9 +271,7 @@ function setupRound() {
     clearMapMarkers();
     map.setView(CAMPUS_CENTER, 17, { animate: false });
 
-    roundHeader.textContent = isUnlimited
-        ? `ROUND ${gameState.currentRound}`
-        : `ROUND ${gameState.currentRound} / ${gameState.maxRounds}`;
+    roundHeader.textContent = roundTitle();
     setGuessState('disabled');
     setHint(IS_TOUCH ? 'Tap the map to drop your pin.' : 'Click the map to drop your pin.');
     resetTimerDisplay();
@@ -317,13 +287,8 @@ function setupRound() {
         setHint('⚠️ This photo failed to load. Try refreshing the page.');
         onReady();
     };
-    const src = serverMode ? `./${data.photo}` : imgPath(data.name);
-    photoImg.src = src;
+    photoImg.src = `./${data.photo}`;
     if (photoImg.complete && photoImg.naturalWidth > 0) onReady();
-
-    // Warm the cache for the next round (classic only: the server issues one photo at a time)
-    const next = !serverMode && gamePool[gameState.currentRound];
-    if (next) new Image().src = imgPath(next.name);
 }
 
 function onMapClick(e) {
@@ -344,35 +309,25 @@ function submitGuess() {
     stopTimer();
     timerWrap.classList.remove('low');
     gameState.isGuessed = true;
-
-    if (serverMode) {
-        busy = true;
-        setGuessState('disabled');
-        const g = gameState.userGuess;
-        window.UMGApi.submit(serverGame.id, g.lat, g.lng)
-            .then(res => {
-                busy = false;
-                const target = L.latLng(res.answer.lat, res.answer.lng);
-                if (res.timed_out) {
-                    showTimeout(target, '⏰ Too late!', 'Your guess reached the server after time ran out.');
-                    return;
-                }
-                gameState.totalScore = res.total_score;
-                showGuessResult(target, res.distance_m, res.score);
-            })
-            .catch(onServerError);
-        return;
-    }
-
-    const target = currentTarget();
-    const distance = map.distance(gameState.userGuess, target);
-    const score = calcScore(distance);
-    gameState.totalScore += score;
-    showGuessResult(target, distance, score);
+    busy = true;
+    setGuessState('disabled');
+    const g = gameState.userGuess;
+    window.UMGApi.submit(serverGame.id, g.lat, g.lng)
+        .then(res => {
+            busy = false;
+            const target = L.latLng(res.answer.lat, res.answer.lng);
+            if (res.timed_out) {
+                showTimeout(target, '⏰ Too late!', 'Your guess reached the server after time ran out.');
+                return;
+            }
+            gameState.totalScore = res.total_score;
+            showGuessResult(target, res.distance_m, res.score);
+        })
+        .catch(onServerError);
 }
 
 function showGuessResult(target, distance, score) {
-    results.push({ round: gameState.currentRound, distance, score });
+    results.push({ round: gameState.currentRound, distance, score, guess: gameState.userGuess, answer: target });
     animateScore(gameState.totalScore);
 
     targetMarker = L.marker(target, { icon: pin1 }).addTo(map);
@@ -391,25 +346,18 @@ function advance() {
         finishGame();
         return;
     }
-    if (serverMode) {
-        busy = true;
-        setGuessState('disabled');
-        window.UMGApi.nextRound(serverGame.id)
-            .then(round => {
-                busy = false;
-                serverGame.round = round;
-                gameState.currentRound = round.round_no;
-                sfx('next');
-                setupRound();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            })
-            .catch(onServerError);
-        return;
-    }
-    gameState.currentRound++;
-    sfx('next');
-    setupRound();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    busy = true;
+    setGuessState('disabled');
+    window.UMGApi.nextRound(serverGame.id)
+        .then(round => {
+            busy = false;
+            serverGame.round = round;
+            gameState.currentRound = round.round_no;
+            sfx('next');
+            setupRound();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .catch(onServerError);
 }
 
 guessBtn.addEventListener('click', () => {
@@ -449,8 +397,13 @@ function squareFor(score) {
 function buildShareText() {
     const max = results.length * MAX_POINTS;
     const squares = results.slice(0, 30).map(r => squareFor(r.score)).join('');
+    const best = results.reduce((m, r) => (r.distance !== null && (m === null || r.distance < m) ? r.distance : m), null);
+    const bestLine = best !== null ? `\n📍 Closest: ${formatDistance(best)}` : '';
+    if (isDaily) {
+        return `UManitoba Guesser Daily #${dailyNumber || ''} 🦬\n${gameState.totalScore.toLocaleString()} / ${max.toLocaleString()}\n${squares}${bestLine}`;
+    }
     const mode = isUnlimited ? 'unlimited' : `${results.length} rounds`;
-    return `UManitoba Guesser 🦬\n${gameState.totalScore.toLocaleString()} / ${max.toLocaleString()} (${difficulty}, ${mode})\n${squares}`;
+    return `UManitoba Guesser 🦬\n${gameState.totalScore.toLocaleString()} / ${max.toLocaleString()} (${difficulty}, ${mode})\n${squares}${bestLine}`;
 }
 
 function fillResults() {
@@ -464,8 +417,10 @@ function fillResults() {
     $('resRank').textContent = rankFor(pct);
     $('resScore').textContent = gameState.totalScore.toLocaleString();
     $('resMax').textContent = `/ ${max.toLocaleString()}`;
-    $('resNew').hidden = !isNewBest;
-    $('resBest').textContent = `Personal best (${difficulty}, ${isUnlimited ? 'unlimited' : selectedRounds + ' rounds'}): ${getBest().toLocaleString()}`;
+    $('resNew').hidden = !isNewBest || isDaily;
+    $('resBest').textContent = isDaily
+        ? `Daily #${dailyNumber || ''} · come back tomorrow for new photos`
+        : `Personal best (${difficulty}, ${isUnlimited ? 'unlimited' : selectedRounds + ' rounds'}): ${getBest().toLocaleString()}`;
 
     const list = $('resList');
     list.innerHTML = '';
@@ -478,18 +433,64 @@ function fillResults() {
             `<span class="rl-pts">${r.score.toLocaleString()}</span>`;
         list.appendChild(li);
     });
+    if (isDaily) showDailyStanding();
 }
 
-function openResults() { resultsModal.classList.remove('hidden'); }
+// "You beat N% of today's players"
+function showDailyStanding() {
+    const el = $('resDaily');
+    if (!el || !window.UMGApi.dailyStatus) return;
+    el.hidden = true;
+    window.UMGApi.dailyStatus().then(s => {
+        if (s.my_score == null) return;
+        el.textContent = s.beat_pct != null
+            ? `You beat ${s.beat_pct}% of today's ${s.players.toLocaleString()} players`
+            : `You're the first to finish today's challenge!`;
+        el.hidden = false;
+    }).catch(() => {});
+}
+
+// End-of-game map: every guess, every answer, joined by a line
+let resultsMap = null;
+function drawResultsMap() {
+    const box = $('resMap');
+    if (!box) return;
+    if (!resultsMap) {
+        resultsMap = L.map(box, { zoomControl: false, attributionControl: true, scrollWheelZoom: false });
+        L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTR }).addTo(resultsMap);
+    }
+    resultsMap.eachLayer(l => { if (!(l instanceof L.TileLayer)) resultsMap.removeLayer(l); });
+    resultsMap.invalidateSize();
+    const pts = [];
+    results.forEach(r => {
+        L.marker(r.answer, { icon: window.UMGPins.answer(26), interactive: false }).addTo(resultsMap);
+        pts.push(r.answer);
+        if (r.guess) {
+            L.polyline([r.guess, r.answer], { color: '#1d9fd9', weight: 2, dashArray: '4, 6' }).addTo(resultsMap);
+            L.marker(r.guess, { icon: window.UMGPins.guess(window.UMGPins.color(1), 24, String(r.round)), interactive: false }).addTo(resultsMap);
+            pts.push(r.guess);
+        }
+    });
+    if (pts.length) resultsMap.fitBounds(L.latLngBounds(pts), { padding: [28, 28], maxZoom: 17 });
+    else resultsMap.setView(CAMPUS_CENTER, 15);
+}
+
+function openResults() {
+    resultsModal.classList.remove('hidden');
+    setTimeout(drawResultsMap, 30);   // Leaflet needs the box to be visible to size it
+}
 function closeResults() { resultsModal.classList.add('hidden'); }
 
 function finishGame() {
     stopTimer();
     finished = true;
     // Server records the result (ranked/abandoned); the screen already has every round
-    if (serverMode && serverGame) {
+    if (serverGame) {
         window.UMGApi.finish(serverGame.id)
-            .then(() => document.dispatchEvent(new Event('umg:gamefinished')))   // lets the sidebar refresh
+            .then(() => {
+                document.dispatchEvent(new Event('umg:gamefinished'));   // lets the sidebar refresh
+                if (isDaily) showDailyStanding();
+            })
             .catch(err => console.error(err));
     }
     endBtn.style.display = 'none';
@@ -504,29 +505,34 @@ function finishGame() {
 
 async function shareScore() {
     const text = buildShareText();
+    const url = isDaily ? `${SITE_URL}/play.html?mode=daily` : SITE_URL;
     const btn = $('shareBtn');
     try {
         if (navigator.share) {
-            await navigator.share({ title: 'UManitoba Guesser', text, url: SITE_URL });
+            await navigator.share({ title: 'UManitoba Guesser', text, url });
             return;
         }
     } catch (e) {
         if (e.name === 'AbortError') return;
     }
     try {
-        await navigator.clipboard.writeText(`${text}\nPlay: ${SITE_URL}`);
+        await navigator.clipboard.writeText(`${text}\nPlay: ${url}`);
         const old = btn.textContent;
         btn.textContent = 'Copied!';
         setTimeout(() => { btn.textContent = old; }, 1800);
     } catch (e) {
-        window.prompt('Copy your score:', `${text}\nPlay: ${SITE_URL}`);
+        window.prompt('Copy your score:', `${text}\nPlay: ${url}`);
     }
 }
 
 $('shareBtn').addEventListener('click', shareScore);
 $('closeResults').addEventListener('click', closeResults);
 resultsModal.addEventListener('click', (e) => { if (e.target === resultsModal) closeResults(); });
-$('playAgainBtn').addEventListener('click', resetGame);
+$('playAgainBtn').addEventListener('click', () => {
+    // One Daily attempt per day: "play again" means a normal game
+    if (isDaily) { window.location.href = './play.html?diff=medium&rounds=5'; return; }
+    resetGame();
+});
 
 endBtn.addEventListener('click', () => {
     if (results.length === 0) { setHint('Finish at least one round first.'); return; }
@@ -534,48 +540,44 @@ endBtn.addEventListener('click', () => {
 });
 
 // ---------- Data / init / restart ----------
-function loadGameData(onComplete) {
-    if (serverMode) {
-        busy = true;
-        const rounds = isUnlimited ? null : (parseInt(selectedRounds, 10) || 5);
-        window.UMGApi.startGame(difficulty, rounds)
-            .then(g => {
-                busy = false;
-                serverGame = { id: g.game_id, round: g.round };
-                gameState.currentRound = g.round.round_no;
-                gameState.maxRounds = g.rounds_planned || g.pool_size;
-                onComplete();
-            })
-            .catch(err => {
-                // Server unavailable: fall back to the classic game so nobody is blocked
-                busy = false;
-                console.warn('Server game unavailable, using classic mode:', err);
-                serverMode = false;
-                serverGame = null;
-                loadGameData(onComplete);
-            });
+function startError(err) {
+    const code = err && err.message;
+    if (code === 'daily_already_played') {
+        roundHeader.textContent = 'DAILY CHALLENGE';
+        showFeedback("📅 You've already played today's Daily Challenge.\n\nNew photos every day at midnight (Winnipeg time). See how you did on the Leaderboard page.");
+        gameStarted = false;
         return;
     }
-    fetch('./locations/locations.json')
-        .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
-        .then(data => {
-            const shuffled = shuffle(data.locations.slice());
-            gamePool = isUnlimited
-                ? shuffled
-                : shuffled.slice(0, Math.min(parseInt(selectedRounds, 10) || 5, shuffled.length));
-            gameState.maxRounds = gamePool.length;
+    console.error(err);
+    showFeedback("⚠️ Couldn't reach the game server.\nCheck your connection and press Restart.");
+}
+
+function loadGameData(onComplete) {
+    if (!serverReady) {
+        showFeedback("⚠️ The game is offline for maintenance.\nPlease try again soon.");
+        return;
+    }
+    busy = true;
+    const rounds = isUnlimited ? null : (parseInt(selectedRounds, 10) || 5);
+    const start = isDaily ? window.UMGApi.dailyStart() : window.UMGApi.startGame(difficulty, rounds);
+    start
+        .then(g => {
+            busy = false;
+            serverGame = { id: g.game_id, round: g.round };
+            dailyNumber = g.daily_number || null;
+            gameState.currentRound = g.round.round_no;
+            gameState.maxRounds = g.rounds_planned || g.pool_size;
             onComplete();
         })
-        .catch(err => {
-            console.error(err);
-            showFeedback("⚠️ Couldn't load the locations.\nPlease refresh the page.");
-        });
+        .catch(err => { busy = false; startError(err); });
 }
 
 function resetGame() {
+    if (isDaily && results.length) return;   // one attempt per day
     stopTimer();
     closeResults();
     finished = false;
+    serverGame = null;
     gameState.currentRound = 1;
     gameState.totalScore = 0;
     results = [];
@@ -597,14 +599,11 @@ restartBtn.addEventListener('click', () => {
 window.addEventListener('load', () => {
     renderBest();
     endBtn.style.display = isUnlimited ? '' : 'none';
-    if (serverMode) {
-        // The game (and round 1's clock) starts when the rules are closed: see hideFeedback()
-        gameState.maxRounds = isUnlimited ? 0 : (parseInt(selectedRounds, 10) || 5);
-        displayGameRules();
-        return;
+    if (isDaily) {
+        restartBtn.style.display = 'none';
+        roundHeader.textContent = 'DAILY CHALLENGE';
     }
-    loadGameData(() => {
-        setupRound();
-        displayGameRules();
-    });
+    // The game (and round 1's clock) starts when the rules are closed: see hideFeedback()
+    gameState.maxRounds = isUnlimited ? 0 : (parseInt(selectedRounds, 10) || 5);
+    displayGameRules();
 });

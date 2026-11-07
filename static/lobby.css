@@ -1,0 +1,220 @@
+/* static/lobby.css - friend lobbies (game screen styles come from play.css) */
+
+/* ---------- Create / join + waiting room cards ---------- */
+.lobby-main { align-items: flex-start; }
+.lobby-card {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 36px 32px 32px;
+    text-align: center;
+    background: var(--card-bg);
+    border: 2px solid var(--line);
+    border-top: 6px solid var(--secondary-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+    animation: fadeIn 0.4s ease both;
+}
+.lobby-card[hidden], .lobby-game[hidden] { display: none; }
+.lobby-card h1 { font-size: 3.2rem; color: var(--heading); line-height: 1; }
+.lb-tagline { color: var(--text-muted); margin-top: -4px; }
+
+.lb-field { font-weight: 700; color: var(--heading); margin-top: 6px; }
+.lb-input {
+    width: 100%;
+    max-width: 320px;
+    padding: 12px 14px;
+    font: 600 1.05rem "Fira Sans", sans-serif;
+    text-align: center;
+    color: var(--text-main);
+    background: var(--surface);
+    border: 2px solid var(--line-strong);
+    border-radius: var(--border-radius);
+}
+.lb-input:focus { outline: none; border-color: var(--secondary-color); box-shadow: 0 0 0 3px rgba(230, 161, 11, 0.25); }
+.code-input { font-family: "Bebas Neue", sans-serif; font-size: 2rem; letter-spacing: 8px; padding: 6px 10px 2px; }
+.code-input::placeholder { letter-spacing: 6px; opacity: 0.5; }
+
+.lobby-split { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 6px; }
+.lb-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 16px;
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--border-radius);
+}
+.lb-box h2 { font-size: 1.7rem; color: var(--heading); line-height: 1; }
+.lb-box .lb-input { max-width: 100%; }
+.lb-box > button { width: 100%; }
+.lb-help { color: var(--text-muted); font-size: 0.88rem; line-height: 1.45; min-height: 2.6em; }
+.lb-note { color: var(--heading); font-weight: 600; }
+.lb-foot { color: var(--text-muted); font-size: 0.82rem; }
+.lb-error {
+    width: 100%;
+    padding: 10px 14px;
+    color: #fff;
+    font-weight: 600;
+    background: var(--danger);
+    border-radius: var(--border-radius);
+}
+.lb-error[hidden] { display: none; }
+
+/* Segmented choice buttons */
+.seg { display: inline-flex; padding: 4px; gap: 4px; background: var(--card-bg); border: 2px solid var(--line); border-radius: 999px; flex-wrap: wrap; justify-content: center; }
+.seg button {
+    min-height: 38px;
+    padding: 0 14px;
+    font: 600 0.95rem "Fira Sans", sans-serif;
+    color: var(--text-main);
+    background: none;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.seg button:hover:not(:disabled) { background: var(--line); }
+.seg button.selected { background: var(--secondary-color); color: #1a1300; }
+.seg button:disabled { cursor: default; }
+.seg button:disabled:not(.selected) { opacity: 0.55; }
+.seg button:focus-visible { outline: 3px solid var(--secondary-color); outline-offset: 1px; }
+
+/* Waiting room */
+.lb-kicker { color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; }
+.code-big {
+    font: 400 4.2rem/1 "Bebas Neue", sans-serif;
+    letter-spacing: 12px;
+    padding: 10px 18px 4px 30px;
+    color: var(--heading);
+    background: var(--surface);
+    border: 3px dashed var(--secondary-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+.code-big:hover { background: rgba(230, 161, 11, 0.12); }
+.lb-copy { margin-top: -4px; }
+.lb-sub { font-size: 1.8rem; color: var(--heading); margin-top: 8px; }
+.lb-count { color: var(--text-muted); font-size: 1.2rem; }
+
+.lb-players { list-style: none; width: 100%; max-width: 440px; margin: 0; padding: 0; display: grid; gap: 8px; }
+.lb-players li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    text-align: left;
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-left: 6px solid var(--pin);
+    border-radius: var(--border-radius);
+    animation: rise 0.3s var(--ease-out) both;
+}
+.lp-dot { flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%; background: var(--pin); box-shadow: 0 0 0 2px var(--card-bg), 0 0 0 3px var(--pin); }
+.lp-name { flex: 1; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lp-tag { font-size: 0.72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--line-strong); color: var(--heading); white-space: nowrap; }
+.lp-tag.host { background: var(--secondary-color); color: #1a1300; }
+.lp-tag.away { background: none; border: 1px dashed var(--line-strong); color: var(--text-muted); }
+.lp-kick { width: 30px; height: 30px; border-radius: 50%; border: none; background: none; color: var(--text-muted); cursor: pointer; }
+.lp-kick:hover { background: var(--danger); color: #fff; }
+
+.lb-settings { width: 100%; max-width: 440px; display: grid; gap: 10px; padding: 14px; background: var(--surface); border: 2px solid var(--line); border-radius: var(--border-radius); }
+.lb-setting { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.lb-setting[hidden] { display: none; }
+.lb-setting > span { font-weight: 700; color: var(--heading); }
+.lb-settings .lb-help { min-height: 0; text-align: left; }
+.lb-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.lb-actions button { min-width: 150px; min-height: 50px; }
+.lb-actions button[hidden] { display: none; }
+
+/* ---------- In game ---------- */
+.lobby-game { width: 100%; max-width: 1240px; display: flex; gap: 24px; align-items: flex-start; justify-content: center; }
+.lobby-game .game-card { flex: 1 1 auto; min-width: 0; }
+.gameButtons button[hidden] { display: none; }
+
+/* "Get ready" countdown over the (hidden) photo */
+.photo-wrap.lb-wait img { filter: blur(22px) brightness(0.6); }
+.get-ready {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+.get-ready[hidden] { display: none; }
+.get-ready span { font: 400 7rem/1 "Bebas Neue", sans-serif; animation: bump 0.5s var(--ease-pop); }
+.get-ready small { font-weight: 700; font-size: 1.1rem; letter-spacing: 3px; text-transform: uppercase; }
+
+/* Scoreboard / health panel */
+.lobby-side {
+    flex: 0 0 300px;
+    position: sticky;
+    top: 94px;
+    padding: 22px 18px 18px;
+    background: var(--card-bg);
+    border: 2px solid var(--line);
+    border-top: 6px solid var(--secondary-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+}
+.lobby-side h2 { font-size: 1.9rem; color: var(--heading); line-height: 1; }
+.lb-score { list-style: none; margin: 0 0 14px; padding: 0; }
+.lb-score li {
+    display: grid;
+    grid-template-columns: 18px 14px 1fr auto auto;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 6px;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.95rem;
+    transition: background 0.2s;
+}
+.lb-score li:last-child { border-bottom: none; }
+.lb-score li.me { background: rgba(230, 161, 11, 0.14); border-radius: 8px; }
+.lb-score li.out { opacity: 0.5; }
+.lb-score li.out .ls-name { text-decoration: line-through; }
+.lb-score li.away .ls-name::after { content: " (away)"; color: var(--text-muted); font-weight: 400; font-size: 0.8rem; }
+.ls-rank { font-weight: 700; color: var(--text-muted); text-align: center; }
+.ls-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ls-num { font-weight: 700; color: var(--heading); min-width: 46px; text-align: right; }
+.ls-st { font-size: 0.82rem; font-weight: 700; padding: 0 6px; border-radius: 999px; }
+.ls-st.ok { color: var(--success); }
+.ls-st.wait { color: var(--text-muted); animation: lbBlink 1.2s ease-in-out infinite; }
+@keyframes lbBlink { 50% { opacity: 0.3; } }
+.ls-st.hit { color: #fff; background: var(--danger); }
+.ls-hp { grid-column: 3 / 4; grid-row: 2; height: 7px; border-radius: 99px; background: var(--line-strong); overflow: hidden; }
+.ls-hp span { display: block; height: 100%; background: var(--pin); transition: width 0.8s var(--ease-out); }
+.lb-score li:has(.ls-hp) { grid-template-rows: auto auto; row-gap: 4px; }
+
+/* Final standings */
+.lb-final li { grid-template-columns: 34px 1fr auto auto; }
+.lb-final li.me { background: rgba(230, 161, 11, 0.14); }
+.lb-final .rl-round { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+.lb-linkbtn { background: none; border: none; cursor: pointer; font: inherit; font-size: 0.9rem; }
+.res-actions button:disabled { opacity: 0.6; }
+
+/* Name tag above each player's pin during the reveal */
+.pin-label { pointer-events: none; }
+
+@media (max-width: 1100px) {
+    .lobby-game { flex-direction: column; align-items: center; }
+    .lobby-side { position: static; width: 100%; max-width: 900px; flex: 0 0 auto; }
+}
+@media (max-width: 600px) {
+    .lobby-card { padding: 28px 16px 22px; }
+    .lobby-card h1 { font-size: 2.6rem; }
+    .lobby-split { grid-template-columns: 1fr; }
+    .code-big { font-size: 3.2rem; letter-spacing: 8px; padding-left: 22px; }
+    .lb-setting { justify-content: center; }
+    .lb-actions { width: 100%; }
+    .lb-actions button { flex: 1; min-width: 0; }
+}

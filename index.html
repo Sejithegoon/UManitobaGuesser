@@ -34,6 +34,7 @@
                 <ul>
                     <li><a href="./" class="active" aria-current="page">Home</a></li>
                     <li class="nav-play"><a class="nav-play-btn" id="playLinkNav" href="./play.html?diff=easy&rounds=5">Play</a></li>
+                    <li><a href="./lobby.html">Friends</a></li>
                     <li><a href="./leaderboard.html">Leaderboard</a></li>
                     <li><a href="./about.html">About Us</a></li>
                 </ul>
@@ -53,6 +54,7 @@
             <h1>UManitoba Guesser</h1>
             <p class="tagline">How well do you know the Fort Garry campus?</p>
             <p class="live-strip" data-live hidden><span class="live-dot" aria-hidden="true"></span><span data-online></span> · <span data-registered></span></p>
+            <p class="stats-strip" data-live hidden><span aria-hidden="true">👀</span> <span data-visits></span> · <span aria-hidden="true">🎮</span> <span data-games></span></p>
 
             <div class="gameOptions">
                 <h3>Select Difficulty</h3>
@@ -77,13 +79,32 @@
                 <a id="playLinkBtn" class="play-now" href="./play.html?diff=easy&rounds=5">Play now</a>
             </div>
 
+            <!-- More ways to play -->
+            <div class="mode-cards">
+                <a class="mode-card" href="./play.html?mode=daily">
+                    <span class="mode-icon" aria-hidden="true">📅</span>
+                    <span class="mode-text">
+                        <strong>Daily Challenge <span class="mode-tag" data-daily></span></strong>
+                        <span>Same 5 photos for everyone. One try a day.</span>
+                        <small data-daily-players></small>
+                    </span>
+                </a>
+                <a class="mode-card" href="./lobby.html">
+                    <span class="mode-icon" aria-hidden="true">👥</span>
+                    <span class="mode-text">
+                        <strong>Play with Friends <span class="mode-tag new">New</span></strong>
+                        <span>Make a lobby, share the code, race your friends live. Party or Duels.</span>
+                    </span>
+                </a>
+            </div>
+
             <script>
                 // State to hold both selections
                 let currentDiff = 'easy';
                 let currentRounds = '5';
 
                 function updatePlayLinks() {
-                    const playLinks = document.querySelectorAll('a[href^="./play.html"]');
+                    const playLinks = document.querySelectorAll('a[href^="./play.html"]:not([href*="mode=daily"])');
                     playLinks.forEach(link => { 
                         link.href = `./play.html?diff=${currentDiff}&rounds=${currentRounds}`; 
                     });
@@ -169,6 +190,7 @@
         document.addEventListener('DOMContentLoaded', updateThemeIcon);
     </script>
     <script src="./static/config.js"></script>
+    <script src="./static/visit.js"></script>
     <script src="./static/api.js"></script>
     <script src="./static/presence.js"></script>
     <script src="./static/nav.js"></script>
